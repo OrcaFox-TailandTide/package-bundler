@@ -1,0 +1,599 @@
+/* ==========================================================================
+   PopTool.uss - ポップ可愛い共通スタイル（オレンジ × 水色）
+   文字色・サイズは .pop-root から始まるセレクタで指定する
+   （Unity 標準の .unity-label 指定より優先させるため）
+   ========================================================================== */
+
+.pop-root {
+    flex-grow: 1;
+    background-color: #FFF8F0;
+    padding: 12px;
+    font-size: 13px;
+}
+.pop-root .unity-label,
+.pop-root .unity-base-field__label {
+    color: #3A2E2A;
+}
+
+/* ---- ヘッダー ---- */
+.pop-header {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.pop-title-col {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 0;
+}
+.pop-root .pop-title {
+    font-size: 17px;
+    -unity-font-style: bold;
+    color: #3A2E2A;
+}
+.pop-root .pop-subtitle {
+    font-size: 12px;
+    color: #6E5E54;
+}
+
+/* ---- 言語切替（右上） ---- */
+.pop-lang {
+    flex-direction: row;
+    flex-shrink: 0;
+    background-color: #E3F6FD;
+    border-radius: 12px;
+    padding: 2px;
+}
+.pop-lang-btn {
+    margin: 0;
+    padding: 2px 10px;
+    border-width: 0;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0);
+    color: #2B8DB8;
+    font-size: 12px;
+    -unity-font-style: bold;
+}
+.pop-lang-btn--active {
+    background-color: #4FC3F7;
+    color: #FFFFFF;
+}
+
+/* ---- タブ（よく押すので動きは付けない） ---- */
+.pop-tabs {
+    flex-direction: row;
+    flex-shrink: 0;
+    background-color: #FFE8D6;
+    border-radius: 14px;
+    padding: 3px;
+    margin-bottom: 10px;
+}
+.pop-tab {
+    flex-grow: 1;
+    flex-basis: 0;
+    height: 30px;
+    margin: 0;
+    border-width: 0;
+    border-radius: 11px;
+    background-color: rgba(0, 0, 0, 0);
+    color: #D95E16;
+    font-size: 13px;
+    -unity-font-style: bold;
+}
+.pop-tab:hover {
+    background-color: #FFDCC2;
+}
+.pop-tab--active,
+.pop-tab--active:hover {
+    background-color: #F26B1D;
+    color: #FFFFFF;
+}
+
+/* ---- スクロール ---- */
+/* 中身の高さぶんだけ取り、下のボタンは中身のすぐ下に付ける。
+   はみ出すときだけ縮んでスクロールする */
+.pop-scroll {
+    flex-grow: 0;
+    flex-shrink: 1;
+}
+.pop-root .unity-scroller--vertical {
+    background-color: #FFF8F0;
+    border-width: 0;
+}
+.pop-root .unity-scroller .unity-base-slider__tracker {
+    background-color: #FFF0E3;
+    border-width: 0;
+    border-radius: 4px;
+}
+.pop-root .unity-scroller .unity-base-slider__dragger {
+    background-color: #FFD2B0;
+    border-width: 0;
+    border-radius: 4px;
+}
+.pop-root .unity-scroller .unity-repeat-button {
+    display: none;
+}
+
+/* ---- カード ---- */
+.pop-card {
+    background-color: #FFFFFF;
+    border-width: 2px;
+    border-color: #FFE0C7;
+    border-radius: 14px;
+    padding: 12px;
+    margin-bottom: 10px;
+}
+.pop-root .pop-card-title {
+    font-size: 14px;
+    -unity-font-style: bold;
+    margin-bottom: 6px;
+}
+.pop-root .pop-field-label {
+    font-size: 13px;
+    -unity-font-style: bold;
+    margin-top: 4px;
+    margin-bottom: 3px;
+}
+.pop-root .pop-inline-label {
+    -unity-font-style: bold;
+    margin-right: 6px;
+}
+
+/* ---- 下に固定する操作エリア ---- */
+.pop-footer {
+    flex-shrink: 0;
+    padding-top: 8px;
+    border-top-width: 2px;
+    border-color: #FFE0C7;
+}
+
+/* ---- 並び ---- */
+.pop-row {
+    flex-direction: row;
+    align-items: center;
+}
+.pop-grow {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 60px;
+}
+.pop-list {
+    margin-bottom: 4px;
+}
+
+/* ---- メインボタン（オレンジ） ---- */
+.pop-btn {
+    height: 34px;
+    margin: 6px 0 2px 0;
+    padding: 0 12px;
+    border-width: 0;
+    border-bottom-width: 3px;
+    border-bottom-color: #C9530F;
+    border-radius: 12px;
+    background-color: #F26B1D;
+    color: #FFFFFF;
+    font-size: 14px;
+    -unity-font-style: bold;
+    white-space: normal;
+    transition-property: scale, background-color;
+    transition-duration: 0.12s, 0.15s;
+    transition-timing-function: ease-out-cubic;
+}
+.pop-btn:hover {
+    background-color: #FF7F33;
+}
+.pop-btn:active {
+    scale: 0.97 0.97;
+    background-color: #D95E16;
+}
+.pop-btn:disabled {
+    background-color: #F7C4A5;
+    border-bottom-color: #E8A57E;
+}
+
+/* ---- 小さいボタン ---- */
+.pop-btn-sm {
+    height: 26px;
+    min-width: 44px;
+    margin: 0 0 0 4px;
+    padding: 0 10px;
+    border-width: 0;
+    border-bottom-width: 2px;
+    border-bottom-color: #F5B48A;
+    border-radius: 10px;
+    background-color: #FFE8D6;
+    color: #C9530F;
+    font-size: 12px;
+    -unity-font-style: bold;
+    transition-property: scale, background-color;
+    transition-duration: 0.12s, 0.15s;
+    transition-timing-function: ease-out-cubic;
+}
+.pop-btn-sm:hover {
+    background-color: #FFDCC2;
+}
+.pop-btn-sm:active {
+    scale: 0.95 0.95;
+}
+.pop-btn-sm:disabled {
+    opacity: 0.4;
+}
+.pop-btn-sm--sub {
+    background-color: #E3F6FD;
+    border-bottom-color: #A9DDF2;
+    color: #2B8DB8;
+}
+.pop-btn-sm--sub:hover {
+    background-color: #D2F0FC;
+}
+.pop-btn-sm--main {
+    background-color: #F26B1D;
+    border-bottom-color: #C9530F;
+    color: #FFFFFF;
+}
+.pop-btn-sm--main:hover {
+    background-color: #FF7F33;
+}
+
+/* ---- 丸いアイコンボタン ---- */
+.pop-icon-btn {
+    width: 26px;
+    height: 26px;
+    margin: 0 0 0 4px;
+    padding: 0;
+    border-width: 0;
+    border-radius: 13px;
+    background-color: #FFE8D6;
+    color: #F26B1D;
+    font-size: 11px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    transition-property: scale, background-color;
+    transition-duration: 0.12s, 0.15s;
+    transition-timing-function: ease-out-cubic;
+}
+.pop-icon-btn:hover {
+    background-color: #FFDCC2;
+}
+.pop-icon-btn:active {
+    scale: 0.92 0.92;
+}
+.pop-icon-btn:disabled {
+    opacity: 0.35;
+}
+.pop-icon-btn--danger {
+    background-color: #FFE3E3;
+    color: #E25555;
+    font-size: 15px;
+}
+.pop-icon-btn--danger:hover {
+    background-color: #FFD3D3;
+}
+.pop-icon-btn--sub {
+    background-color: #E3F6FD;
+    color: #2B8DB8;
+    font-size: 15px;
+}
+.pop-icon-btn--sub:hover {
+    background-color: #D2F0FC;
+}
+
+/* ---- テキストリンク風ボタン ---- */
+.pop-link-row {
+    justify-content: center;
+}
+.pop-link {
+    margin: 2px 6px 0 6px;
+    padding: 2px 4px;
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    color: #2B8DB8;
+    font-size: 12px;
+    -unity-font-style: bold;
+}
+.pop-link:hover {
+    color: #F26B1D;
+}
+
+/* ---- パッケージ一覧の 1 行 ---- */
+.pop-item {
+    background-color: #FFF8F0;
+    border-width: 1px;
+    border-color: #FFE0C7;
+    border-radius: 10px;
+    padding: 6px 8px;
+    margin-bottom: 6px;
+}
+.pop-item--off {
+    opacity: 0.55;
+}
+.pop-root .pop-item-name {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 40px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -unity-font-style: bold;
+    margin-left: 2px;
+}
+.pop-root .pop-item-name--missing {
+    color: #E25555;
+}
+.pop-newer {
+    margin-top: 5px;
+    padding: 4px 6px;
+    background-color: #E3F6FD;
+    border-radius: 8px;
+}
+.pop-root .pop-newer-label {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 40px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 12px;
+    color: #2B8DB8;
+    -unity-font-style: bold;
+}
+
+/* ---- ドロップエリア ---- */
+.pop-root .pop-drop {
+    height: 34px;
+    margin: 2px 0 0 0;
+    border-width: 2px;
+    border-color: #FFC9A3;
+    border-radius: 12px;
+    background-color: #FFF3E8;
+    -unity-text-align: middle-center;
+    white-space: normal;
+    font-size: 12px;
+    color: #C9530F;
+    -unity-font-style: bold;
+    transition-property: background-color, border-color;
+    transition-duration: 0.15s;
+    transition-timing-function: ease-out-cubic;
+}
+.pop-root .pop-drop:hover {
+    background-color: #FFEBDB;
+}
+.pop-root .pop-drop--big {
+    height: 120px;
+    font-size: 13px;
+}
+.pop-root .pop-drop--hover {
+    background-color: #E3F6FD;
+    border-color: #4FC3F7;
+    color: #2B8DB8;
+}
+
+/* ---- プリセット ---- */
+.pop-name-box {
+    margin-top: 8px;
+    padding: 8px;
+    background-color: #FFF8F0;
+    border-radius: 10px;
+}
+.pop-all-row {
+    margin-top: 6px;
+    margin-bottom: 4px;
+}
+.pop-all-row > .pop-btn-sm {
+    margin: 0 4px 0 0;
+}
+.pop-check-row {
+    padding: 4px 6px;
+    margin-bottom: 2px;
+    border-radius: 8px;
+}
+.pop-check-row:hover {
+    background-color: #FFF8F0;
+}
+.pop-check-row--off {
+    opacity: 0.5;
+}
+
+/* ---- パス表示 ---- */
+.pop-root .pop-path {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 40px;
+    height: 26px;
+    padding: 0 8px;
+    background-color: #FFF8F0;
+    border-width: 1px;
+    border-color: #FFD2B0;
+    border-radius: 8px;
+    -unity-text-align: middle-left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 12px;
+}
+
+/* ---- トグル（ダークテーマでも明るく） ---- */
+.pop-toggle-row {
+    margin: 4px 0;
+}
+.pop-root .pop-toggle-label {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 40px;
+    white-space: normal;
+    margin-left: 2px;
+}
+.pop-root .unity-toggle {
+    margin: 0 4px 0 0;
+}
+.pop-root .unity-toggle__checkmark {
+    width: 16px;
+    height: 16px;
+    background-color: #FFFFFF;
+    border-width: 2px;
+    border-color: #FFC9A3;
+    border-radius: 5px;
+    -unity-background-image-tint-color: #F26B1D;
+}
+.pop-root .unity-toggle:hover .unity-toggle__checkmark {
+    border-color: #F26B1D;
+}
+.pop-root .unity-toggle:checked .unity-toggle__checkmark {
+    background-color: #FFE8D6;
+    border-color: #F26B1D;
+}
+
+/* ---- 入力欄・プルダウン ---- */
+.pop-root .unity-text-field,
+.pop-root .unity-base-popup-field {
+    margin: 0;
+}
+.pop-root .unity-base-text-field__input,
+.pop-root .unity-base-popup-field__input {
+    min-height: 26px;
+    background-color: #FFFFFF;
+    color: #3A2E2A;
+    border-color: #FFD2B0;
+    border-radius: 8px;
+    font-size: 13px;
+}
+.pop-root .unity-base-popup-field__text {
+    color: #3A2E2A;
+    -unity-font-style: bold;
+}
+.pop-root .unity-base-popup-field__arrow {
+    -unity-background-image-tint-color: #F26B1D;
+}
+.pop-root .unity-base-text-field__input:focus,
+.pop-root .unity-base-popup-field__input:hover {
+    border-color: #4FC3F7;
+}
+
+/* ---- 状態表示 ---- */
+.pop-root .pop-status {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 40px;
+    margin: 0 6px 0 10px;
+    white-space: normal;
+    padding: 4px 10px;
+    border-radius: 10px;
+    -unity-text-align: middle-left;
+    font-size: 12px;
+    -unity-font-style: bold;
+}
+.pop-root .pop-status--info {
+    background-color: #E3F6FD;
+    color: #2B8DB8;
+}
+.pop-root .pop-status--ok {
+    background-color: #E2F7EE;
+    color: #1F8A61;
+}
+.pop-root .pop-status--warn {
+    background-color: #FFE8E8;
+    color: #D64545;
+}
+
+/* ---- 完成バッジ（ご褒美なので弾む） ---- */
+.pop-root .pop-badge {
+    align-self: center;
+    margin: 2px 0 4px 0;
+    padding: 4px 16px;
+    border-radius: 12px;
+    background-color: #3CC48F;
+    color: #FFFFFF;
+    font-size: 13px;
+    -unity-font-style: bold;
+    opacity: 0;
+    translate: 0 6px;
+    transition-property: opacity, translate;
+    transition-duration: 0.25s;
+    transition-timing-function: ease-out-back;
+}
+.pop-root .pop-badge--show {
+    opacity: 1;
+    translate: 0 0;
+}
+
+/* ---- ログ・補足 ---- */
+.pop-root .pop-log {
+    white-space: normal;
+    padding: 4px 2px;
+    font-size: 12px;
+}
+.pop-root .pop-note {
+    font-size: 12px;
+    white-space: normal;
+    color: #6E5E54;
+    margin-top: 6px;
+}
+
+/* ---- 設定カード内の区切り ---- */
+.pop-gap {
+    height: 1px;
+    margin: 10px 0 6px 0;
+    background-color: #FFE0C7;
+}
+
+/* ---- 一番下: 前回の結果（開閉） ---- */
+.pop-log-section {
+    flex-shrink: 0;
+    margin-top: 8px;
+    background-color: #FFFFFF;
+    border-width: 2px;
+    border-color: #FFE0C7;
+    border-radius: 12px;
+    padding: 2px 8px;
+}
+.pop-log-header {
+    height: 26px;
+    margin: 0;
+    padding: 0 4px;
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    color: #C9530F;
+    font-size: 12px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-left;
+}
+.pop-log-header:hover {
+    color: #F26B1D;
+}
+.pop-root .pop-log-section .pop-log {
+    max-height: 140px;
+    overflow: hidden;
+    padding: 2px 4px 8px 4px;
+    border-top-width: 1px;
+    border-color: #FFE0C7;
+}
+
+/* ---- 追加の並び ---- */
+.pop-option-row {
+    margin-top: 8px;
+}
+.pop-card-title-row {
+    margin-bottom: 6px;
+}
+.pop-root .pop-card-title-row > .pop-card-title {
+    margin-bottom: 0;
+}
+.pop-footer > .pop-toggle-row {
+    margin: 0 0 2px 2px;
+}
+
+/* ---- 作成ボタン上の案内（変更を保存してください） ---- */
+.pop-root .pop-guide {
+    margin: 0 0 2px 0;
+    padding: 6px 10px;
+    background-color: #FFEBDB;
+    color: #C9530F;
+}
+
+/* ---- ツール名の横のバージョン ---- */
+.pop-root .pop-version {
+    margin-left: 8px;
+    padding: 1px 8px;
+    border-radius: 8px;
+    background-color: #FFE8D6;
+    color: #C9530F;
+    font-size: 11px;
+    -unity-font-style: bold;
+}

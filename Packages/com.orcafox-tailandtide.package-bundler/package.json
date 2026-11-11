@@ -1,0 +1,15 @@
+{
+  "name": "com.orcafox-tailandtide.package-bundler",
+  "displayName": "Package Bundler",
+  "version": "0.0.0",
+  "unity": "2022.3",
+  "description": "いつも入れる .unitypackage を 1 つにまとめるエディタ拡張。Bundle the .unitypackage files you always import into one.",
+  "author": {
+    "name": "OrcaFox (Tail＆Tide)",
+    "url": "https://github.com/OrcaFox-TailandTide"
+  },
+  "vpmDependencies": {},
+  "legacyFolders": {
+    "Assets\\PackageBundler": "6b1f0c2a9e4d4f7a8c3e5d2b1a0f9e81"
+  }
+}

@@ -1,5 +1,6 @@
 {
-    "name": "VRChatPackageTemplate.Editor",
+    "name": "OrcaFox.PackageBundler.Editor",
+    "rootNamespace": "PackageBundlerTool",
     "references": [],
     "includePlatforms": [
         "Editor"
