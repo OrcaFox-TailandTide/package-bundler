@@ -338,7 +338,7 @@
 
 /* ---- ドロップエリア ---- */
 .pop-root .pop-drop {
-    height: 34px;
+    height: 64px;
     margin: 2px 0 0 0;
     border-width: 2px;
     border-color: #FFC9A3;
@@ -346,7 +346,7 @@
     background-color: #FFF3E8;
     -unity-text-align: middle-center;
     white-space: normal;
-    font-size: 12px;
+    font-size: 13px;
     color: #C9530F;
     -unity-font-style: bold;
     transition-property: background-color, border-color;
@@ -357,8 +357,8 @@
     background-color: #FFEBDB;
 }
 .pop-root .pop-drop--big {
-    height: 120px;
-    font-size: 13px;
+    height: 150px;
+    font-size: 14px;
 }
 .pop-root .pop-drop--hover {
     background-color: #E3F6FD;
@@ -579,12 +579,76 @@
     margin: 0 0 2px 2px;
 }
 
-/* ---- 作成ボタン上の案内（変更を保存してください） ---- */
-.pop-root .pop-guide {
-    margin: 0 0 2px 0;
-    padding: 6px 10px;
-    background-color: #FFEBDB;
+/* ---- ドラッグ中にウィンドウ全体を覆う「＋ 追加」 ---- */
+.pop-root .pop-drop-overlay {
+    position: absolute;
+    left: 6px;
+    top: 6px;
+    right: 6px;
+    bottom: 6px;
+    border-radius: 14px;
+    border-width: 3px;
+    border-color: #2EA8D8;
+    background-color: rgba(255, 255, 255, 0.75);
+    align-items: center;
+    justify-content: center;
+}
+.pop-root .pop-drop-overlay-pill {
+    padding: 14px 32px;
+    border-radius: 28px;
+    background-color: #2EA8D8;
+    color: #FFFFFF;
+    font-size: 24px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
+/* ---- 並べ替えハンドル ---- */
+.pop-root .pop-handle {
+    width: 18px;
+    font-size: 16px;
+    color: #9FB3BD;
+    -unity-text-align: middle-center;
+    cursor: move-arrow;
+}
+.pop-root .pop-handle:hover {
+    color: #2EA8D8;
+}
+.pop-item--dragging {
+    opacity: 0.5;
+}
+.pop-item--insert-before {
+    border-top-width: 3px;
+    border-top-color: #2EA8D8;
+}
+.pop-item--insert-after {
+    border-bottom-width: 3px;
+    border-bottom-color: #2EA8D8;
+}
+
+/* ---- 見つからないファイルの「場所を選び直す」 ---- */
+.pop-root .pop-btn-sm--warn {
+    background-color: #FF8A3D;
+    color: #FFFFFF;
+    border-color: #FF8A3D;
+}
+.pop-root .pop-btn-sm--warn:hover {
+    background-color: #F07325;
+}
+
+/* ---- 保存済み（押せない状態をはっきり見せる） ---- */
+.pop-root .pop-btn--done:disabled {
+    background-color: #DDF3E4;
+    color: #2E9A55;
+    opacity: 1;
+}
+
+/* ---- インポートの個数表示 ---- */
+.pop-root .pop-count {
+    margin: 2px 0 6px 2px;
     color: #C9530F;
+    font-size: 12px;
+    -unity-font-style: bold;
 }
 
 /* ---- ツール名の横のバージョン ---- */
@@ -596,4 +660,21 @@
     color: #C9530F;
     font-size: 11px;
     -unity-font-style: bold;
+}
+
+/* ---- ×で外した行（保存するまで「元に戻す」で戻せる） ---- */
+.pop-item--removed {
+    background-color: rgba(255, 255, 255, 0.4);
+    border-color: #E3E8EB;
+}
+.pop-root .pop-item--removed .pop-item-name {
+    color: #B5BFC5;
+}
+.pop-root .pop-btn-sm--undo {
+    background-color: #2EA8D8;
+    color: #FFFFFF;
+    border-color: #2EA8D8;
+}
+.pop-root .pop-btn-sm--undo:hover {
+    background-color: #2386B0;
 }

@@ -84,23 +84,27 @@ namespace PackageBundlerTool
             // まとめる
             ["drop_big"]       = new[] { "ここに .unitypackage をドラッグ＆ドロップ\nクリックしてファイルを選ぶこともできます", "Drag & drop .unitypackage files here\nor click to choose a file" },
             ["drop_compact"]   = new[] { "＋ ドロップ または クリックで追加", "+ Drop or click to add" },
-            ["tip_drop"]       = new[] { "更新版を入れると、差し替えるか聞きます。下にあるパッケージほど優先されます（同じファイルは下のもので上書き）。",
-                                         "Dropping a newer version offers to replace the old one. Packages lower in the list win (duplicate files are overwritten by the lower one)." },
+            ["tip_drop"]       = new[] { "ウィンドウのどこにドロップしても追加できます。更新版を入れると、差し替えるか聞きます。",
+                                         "Drop anywhere in the window to add. Dropping a newer version offers to replace the old one." },
             ["missing_suffix"] = new[] { "（ファイルが見つかりません）", " (file not found)" },
             ["newer_label"]    = new[] { "更新版？ {0}", "Newer version? {0}" },
             ["btn_use_newer"]  = new[] { "これに差し替え", "Replace" },
             ["btn_replace"]    = new[] { "差し替え", "Replace" },
             ["tip_enabled"]    = new[] { "まとめに入れる", "Include in the bundle" },
-            ["tip_up"]         = new[] { "上へ", "Move up" },
-            ["tip_down"]       = new[] { "下へ", "Move down" },
             ["tip_replace"]    = new[] { "別のファイルに差し替え", "Replace with another file" },
             ["tip_remove"]     = new[] { "一覧から外す", "Remove from the list" },
-            ["btn_build"]      = new[] { "まとめパッケージを作成／更新", "Build / Update bundle" },
+            ["btn_build_new"]  = new[] { "まとめパッケージを作成", "Build bundle" },
+            ["btn_build_save"] = new[] { "変更を保存", "Save changes" },
+            ["btn_build_done"] = new[] { "保存済み", "Saved" },
+            ["tip_drag"]       = new[] { "ドラッグで並べ替え", "Drag to reorder" },
+            ["btn_undo_remove"] = new[] { "元に戻す", "Undo" },
+            ["tip_undo_remove"] = new[] { "一覧から外す前に戻します。「変更を保存」を押すと外したものは消えます。", "Put it back. Removed items are cleared when you save changes." },
+            ["drop_overlay"]   = new[] { "＋ 離して追加", "+ Release to add" },
+            ["btn_relocate"]   = new[] { "参照先を変更", "Relink" },
+            ["tip_relocate"]   = new[] { "見つからないファイルの参照先を選び直します", "Choose where the missing file is now" },
+            ["import_count"]   = new[] { "{0} 個中 {1} 個を入れる", "{1} of {0} packages will be imported" },
             ["badge_done"]     = new[] { "できた！", "Done!" },
             ["st_no_output"]   = new[] { "設定タブで保存先を決めてください", "Set the output path in Settings" },
-            ["guide_not_built"]= new[] { "下のボタンで、まとめパッケージを作成してください。", "Press the button below to build your bundle." },
-            ["guide_outdated"] = new[] { "パッケージの一覧や中身が変わりました。下のボタンで、まとめパッケージに変更を保存してください。", "Your package list or files have changed. Press the button below to save the changes to your bundle." },
-            ["st_ok"]          = new[] { "最新です（{0}・{1:0.0} MB）", "Up to date ({0}, {1:0.0} MB)" },
             ["btn_reveal"]     = new[] { "保存先フォルダを開く", "Open output folder" },
 
             // プリセット
@@ -132,7 +136,6 @@ namespace PackageBundlerTool
             ["dlg_title"]      = new[] { "Package Bundler", "Package Bundler" },
             ["dlg_ok"]         = new[] { "OK", "OK" },
             ["dlg_cancel"]     = new[] { "キャンセル", "Cancel" },
-            ["dlg_remove"]     = new[] { "「{0}」を一覧から外しますか？\n（ファイル自体は消えません）", "Remove \"{0}\" from the list?\n(The file itself won't be deleted.)" },
             ["dlg_btn_remove"] = new[] { "外す", "Remove" },
             ["dlg_self_add"]   = new[] { "まとめパッケージ自身は一覧に追加できません。", "The bundle itself can't be added to the list." },
             ["dlg_other_ver"]  = new[] { "「{0}」は\n「{1}」の別バージョンのようです。\n差し替えますか？", "\"{0}\" looks like another version of\n\"{1}\".\nReplace it?" },
@@ -188,6 +191,8 @@ namespace PackageBundlerTool
         public string id = "";      // 差し替えても変わらない識別子（プリセット用）
         public string path = "";
         public bool enabled = true; // まとめパッケージに入れるか
+        public bool removed;        // ×で外した（保存するまでは「元に戻す」で戻せる）
+        public bool Live { get { return enabled && !removed; } }
     }
 
     [Serializable]
@@ -720,6 +725,7 @@ namespace PackageBundlerTool
         int currentTab;
         bool showLog;
         bool renaming;
+        int dragFrom = -1, dragTo = -1;
 
         // タブ
         Button[] tabButtons;
@@ -728,7 +734,8 @@ namespace PackageBundlerTool
 
         // まとめる
         VisualElement sourcesBox, logSection;
-        Label dropZone, statusLabel, guideLabel, logLabel, badge;
+        Label dropZone, logLabel, badge, importCountLabel;
+        VisualElement dropOverlay;
         Button buildButton, revealButton, logHeader;
 
         // プリセット
@@ -850,6 +857,18 @@ namespace PackageBundlerTool
             // 一番下: 前回の結果（開閉できる）
             root.Add(BuildLogSection());
 
+            // ウィンドウのどこにドロップしても追加できる。ドラッグ中は全体を半透明で覆う
+            dropOverlay = new VisualElement();
+            dropOverlay.AddToClassList("pop-drop-overlay");
+            dropOverlay.pickingMode = PickingMode.Ignore;
+            var dropPill = l10n.Text(new Label(), "drop_overlay");
+            dropPill.AddToClassList("pop-drop-overlay-pill");
+            dropPill.pickingMode = PickingMode.Ignore;
+            dropOverlay.Add(dropPill);
+            dropOverlay.style.display = DisplayStyle.None;
+            root.Add(dropOverlay);
+            RegisterDrop(root);
+
             SelectTab(Mathf.Clamp(EditorPrefs.GetInt(PrefTab, 0), 0, 1));
             RefreshAll();
         }
@@ -877,9 +896,6 @@ namespace PackageBundlerTool
             var title = l10n.Text(new Label(), "sec_packages");
             title.AddToClassList("pop-card-title");
             titleRow.Add(title);
-            statusLabel = new Label();
-            statusLabel.AddToClassList("pop-status");
-            titleRow.Add(statusLabel);
             card.Add(titleRow);
 
             sourcesBox = new VisualElement();
@@ -888,7 +904,6 @@ namespace PackageBundlerTool
 
             dropZone = l10n.Tip(new Label(), "tip_drop");
             dropZone.AddToClassList("pop-drop");
-            RegisterDrop(dropZone);
             dropZone.RegisterCallback<ClickEvent>(e =>
             {
                 var p = PickPackage(null);
@@ -938,12 +953,7 @@ namespace PackageBundlerTool
             footer.AddToClassList("pop-footer");
 
 
-            guideLabel = new Label();
-            guideLabel.AddToClassList("pop-status");
-            guideLabel.AddToClassList("pop-guide");
-            footer.Add(guideLabel);
-
-            buildButton = l10n.Text(new Button(() => DoBuild()), "btn_build");
+            buildButton = new Button(() => DoBuild());
             buildButton.AddToClassList("pop-btn");
             footer.Add(buildButton);
 
@@ -1028,6 +1038,10 @@ namespace PackageBundlerTool
             allRow.Add(allOnButton);
             allRow.Add(allOffButton);
             card.Add(allRow);
+
+            importCountLabel = new Label();
+            importCountLabel.AddToClassList("pop-count");
+            card.Add(importCountLabel);
 
             presetChecks = new VisualElement();
             presetChecks.AddToClassList("pop-list");
@@ -1205,7 +1219,27 @@ namespace PackageBundlerTool
                 item.AddToClassList("pop-item");
                 if (!s.enabled) item.AddToClassList("pop-item--off");
 
+                if (s.removed)
+                {
+                    item.AddToClassList("pop-item--removed");
+                    var rrow = Row();
+                    var rname = new Label(Path.GetFileNameWithoutExtension(s.path)) { tooltip = Disp(s.path) };
+                    rname.AddToClassList("pop-item-name");
+                    rrow.Add(rname);
+                    var undo = new Button(() => UndoRemove(idx)) { text = Txt.Tr("btn_undo_remove"), tooltip = Txt.Tr("tip_undo_remove") };
+                    undo.AddToClassList("pop-btn-sm");
+                    undo.AddToClassList("pop-btn-sm--undo");
+                    rrow.Add(undo);
+                    item.Add(rrow);
+                    sourcesBox.Add(item);
+                    continue;
+                }
+
                 var row = Row();
+                var handle = new Label("≡") { tooltip = Txt.Tr("tip_drag") };
+                handle.AddToClassList("pop-handle");
+                RegisterRowDrag(handle, idx);
+                row.Add(handle);
                 var t = new Toggle { value = s.enabled, tooltip = Txt.Tr("tip_enabled") };
                 t.RegisterValueChangedCallback(e => { s.enabled = e.newValue; Save(); RefreshAll(); });
                 row.Add(t);
@@ -1216,21 +1250,18 @@ namespace PackageBundlerTool
                 if (!exists) name.AddToClassList("pop-item-name--missing");
                 row.Add(name);
 
-                var up = new Button(() => Swap(idx, idx - 1)) { text = "▲", tooltip = Txt.Tr("tip_up") };
-                up.AddToClassList("pop-icon-btn");
-                up.SetEnabled(idx > 0);
-                row.Add(up);
-                var down = new Button(() => Swap(idx, idx + 1)) { text = "▼", tooltip = Txt.Tr("tip_down") };
-                down.AddToClassList("pop-icon-btn");
-                down.SetEnabled(idx < cfg.sources.Count - 1);
-                row.Add(down);
-
+                // 見つからないファイルは「場所を選び直す」、あるファイルは「差し替え」
                 var rep = new Button(() =>
                 {
                     var p = PickPackage(s.path);
                     if (p != null) { s.path = p; Save(); RefreshAll(); }
-                }) { text = Txt.Tr("btn_replace"), tooltip = Txt.Tr("tip_replace") };
+                })
+                {
+                    text = Txt.Tr(exists ? "btn_replace" : "btn_relocate"),
+                    tooltip = Txt.Tr(exists ? "tip_replace" : "tip_relocate"),
+                };
                 rep.AddToClassList("pop-btn-sm");
+                if (!exists) rep.AddToClassList("pop-btn-sm--warn");
                 row.Add(rep);
 
                 var del = new Button(() => RemoveSource(idx)) { text = "×", tooltip = Txt.Tr("tip_remove") };
@@ -1261,29 +1292,17 @@ namespace PackageBundlerTool
 
         void DrawStatus()
         {
-            // 最新のときだけ見出しの横に「最新です」を出す
+            // 作成ボタンが状態を表す: 初回は「作成」、変更があれば「変更を保存」、保存済みなら押せない
             bool built = !string.IsNullOrEmpty(cfg.outputPath) && File.Exists(cfg.outputPath);
-            bool upToDate = built && cfg.lastBuildSignature == Signature();
-            if (upToDate)
-            {
-                var fi = new FileInfo(cfg.outputPath);
-                statusLabel.text = Txt.F("st_ok", fi.LastWriteTime.ToString("MM/dd HH:mm"), fi.Length / 1048576f);
-                statusLabel.EnableInClassList("pop-status--ok", true);
-            }
-            statusLabel.style.visibility = upToDate ? Visibility.Visible : Visibility.Hidden;
+            // 外した行が残っている間は「変更を保存」のまま（保存で一覧から消える）
+            bool pendingRemove = cfg.sources.Any(x => x.removed);
+            bool upToDate = built && cfg.lastBuildSignature == Signature() && !pendingRemove;
+            bool canBuild = (cfg.sources.Any(x => x.Live) || pendingRemove) && !string.IsNullOrEmpty(cfg.outputPath);
 
-            // 最新でないときは、作成ボタンの上に案内を出す
-            string guide = null;
-            if (string.IsNullOrEmpty(cfg.outputPath)) guide = Txt.Tr("st_no_output");
-            else if (cfg.sources.Any(x => x.enabled))
-            {
-                if (!built) guide = Txt.Tr("guide_not_built");
-                else if (!upToDate) guide = Txt.Tr("guide_outdated");
-            }
-            guideLabel.text = guide ?? "";
-            guideLabel.style.display = guide == null ? DisplayStyle.None : DisplayStyle.Flex;
-
-            buildButton.SetEnabled(cfg.sources.Any(x => x.enabled) && !string.IsNullOrEmpty(cfg.outputPath));
+            buildButton.text = Txt.Tr(!built ? "btn_build_new" : upToDate ? "btn_build_done" : "btn_build_save");
+            buildButton.SetEnabled(canBuild && !upToDate);
+            buildButton.EnableInClassList("pop-btn--done", upToDate);
+            buildButton.tooltip = string.IsNullOrEmpty(cfg.outputPath) ? Txt.Tr("st_no_output") : "";
             revealButton.style.display = File.Exists(cfg.outputPath) ? DisplayStyle.Flex : DisplayStyle.None;
         }
 
@@ -1307,7 +1326,7 @@ namespace PackageBundlerTool
 
             // チェック一覧
             presetChecks.Clear();
-            var enabledSources = cfg.sources.Where(x => x.enabled).ToList();
+            var enabledSources = cfg.sources.Where(x => x.Live).ToList();
             if (enabledSources.Count == 0)
             {
                 var none = new Label(Txt.Tr("no_enabled"));
@@ -1348,6 +1367,7 @@ namespace PackageBundlerTool
         {
             var preset = SelectedPreset;
             int count = SelectedSources().Count;
+            importCountLabel.text = Txt.F("import_count", cfg.sources.Count(x => x.Live), count);
             importButton.text = Txt.F("btn_import", preset == null ? Txt.Tr("preset_all") : preset.name, count);
             importButton.SetEnabled(count > 0 && !string.IsNullOrEmpty(cfg.outputPath));
         }
@@ -1355,7 +1375,7 @@ namespace PackageBundlerTool
         List<BundlerSource> SelectedSources()
         {
             var preset = SelectedPreset;
-            return cfg.sources.Where(s => s.enabled && (preset == null || !preset.off.Contains(s.id))).ToList();
+            return cfg.sources.Where(s => s.Live && (preset == null || !preset.off.Contains(s.id))).ToList();
         }
 
         void ShowBadge()
@@ -1432,52 +1452,122 @@ namespace PackageBundlerTool
             var p = SelectedPreset;
             if (p == null) return;
             p.off.Clear();
-            if (!on) p.off.AddRange(cfg.sources.Where(s => s.enabled).Select(s => s.id));
+            if (!on) p.off.AddRange(cfg.sources.Where(s => s.Live).Select(s => s.id));
             Save();
+            RefreshAll();
+        }
+
+        // -------------------------------------------------------------- 行のドラッグ並べ替え
+        void RegisterRowDrag(VisualElement handle, int index)
+        {
+            handle.RegisterCallback<PointerDownEvent>(e =>
+            {
+                if (e.button != 0) return;
+                dragFrom = index;
+                dragTo = index;
+                handle.CapturePointer(e.pointerId);
+                sourcesBox[index].AddToClassList("pop-item--dragging");
+                e.StopPropagation();
+            });
+            handle.RegisterCallback<PointerMoveEvent>(e =>
+            {
+                if (dragFrom < 0 || !handle.HasPointerCapture(e.pointerId)) return;
+                int count = sourcesBox.childCount;
+                int target = count;
+                for (int i = 0; i < count; i++)
+                {
+                    if (e.position.y < sourcesBox[i].worldBound.center.y) { target = i; break; }
+                }
+                dragTo = target;
+                for (int i = 0; i < count; i++)
+                {
+                    sourcesBox[i].EnableInClassList("pop-item--insert-before", i == target);
+                    sourcesBox[i].EnableInClassList("pop-item--insert-after", target == count && i == count - 1);
+                }
+            });
+            handle.RegisterCallback<PointerUpEvent>(e =>
+            {
+                if (dragFrom < 0) return;
+                int from = dragFrom, to = dragTo;
+                dragFrom = -1;
+                handle.ReleasePointer(e.pointerId);
+                FinishRowDrag(from, to);
+            });
+            handle.RegisterCallback<PointerCaptureOutEvent>(e =>
+            {
+                if (dragFrom >= 0) { dragFrom = -1; RefreshAll(); }
+            });
+        }
+
+        void FinishRowDrag(int from, int to)
+        {
+            if (to > from) to--;
+            if (from >= 0 && to >= 0 && to < cfg.sources.Count && to != from)
+            {
+                var item = cfg.sources[from];
+                cfg.sources.RemoveAt(from);
+                cfg.sources.Insert(to, item);
+                Save();
+            }
             RefreshAll();
         }
 
         // -------------------------------------------------------------- パッケージ操作
-        void Swap(int a, int b)
+        void RemoveSource(int idx)
         {
-            if (a < 0 || b < 0 || a >= cfg.sources.Count || b >= cfg.sources.Count) return;
-            var t = cfg.sources[a];
-            cfg.sources[a] = cfg.sources[b];
-            cfg.sources[b] = t;
+            if (idx < 0 || idx >= cfg.sources.Count) return;
+            cfg.sources[idx].removed = true;   // 保存するまでは一覧に半透明で残す
             Save();
             RefreshAll();
         }
 
-        void RemoveSource(int idx)
+        void UndoRemove(int idx)
         {
             if (idx < 0 || idx >= cfg.sources.Count) return;
-            if (EditorUtility.DisplayDialog(Txt.Tr("dlg_title"),
-                    Txt.F("dlg_remove", Path.GetFileName(cfg.sources[idx].path)),
-                    Txt.Tr("dlg_btn_remove"), Txt.Tr("dlg_cancel")))
-            {
-                cfg.sources.RemoveAt(idx);
-                Save();
-                RefreshAll();
-            }
+            cfg.sources[idx].removed = false;
+            Save();
+            RefreshAll();
         }
 
-        void RegisterDrop(VisualElement zone)
+        /// <summary>保存したときに、外した行を一覧とプリセットから本当に消す。</summary>
+        void PurgeRemoved()
         {
-            zone.RegisterCallback<DragEnterEvent>(e => zone.AddToClassList("pop-drop--hover"));
-            zone.RegisterCallback<DragLeaveEvent>(e => zone.RemoveFromClassList("pop-drop--hover"));
-            zone.RegisterCallback<DragExitedEvent>(e => zone.RemoveFromClassList("pop-drop--hover"));
-            zone.RegisterCallback<DragUpdatedEvent>(e =>
+            var gone = new HashSet<string>(cfg.sources.Where(x => x.removed).Select(x => x.id));
+            if (gone.Count == 0) return;
+            cfg.sources.RemoveAll(x => x.removed);
+            foreach (var p in cfg.presets) p.off.RemoveAll(id => gone.Contains(id));
+            Save();
+        }
+
+        void RegisterDrop(VisualElement area)
+        {
+            area.RegisterCallback<DragUpdatedEvent>(e =>
             {
-                if (DroppedPackages().Length > 0) DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
+                if (DroppedPackages().Length == 0) return;
+                DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
+                ShowDropOverlay(true);
             });
-            zone.RegisterCallback<DragPerformEvent>(e =>
+            area.RegisterCallback<DragLeaveEvent>(e =>
             {
+                // 子要素の間を移動しただけでは消さない。ウィンドウの外に出たら消す
+                if (!area.worldBound.Contains(e.mousePosition)) ShowDropOverlay(false);
+            });
+            area.RegisterCallback<DragExitedEvent>(e => ShowDropOverlay(false));
+            area.RegisterCallback<DragPerformEvent>(e =>
+            {
+                ShowDropOverlay(false);
                 var files = DroppedPackages();
                 if (files.Length == 0) return;
                 DragAndDrop.AcceptDrag();
-                zone.RemoveFromClassList("pop-drop--hover");
+                if (currentTab != 0) SelectTab(0);
                 foreach (var f in files) AddSource(f);
             });
+        }
+
+        void ShowDropOverlay(bool on)
+        {
+            dropOverlay.style.display = on ? DisplayStyle.Flex : DisplayStyle.None;
+            if (on) dropOverlay.BringToFront();
         }
 
         static string[] DroppedPackages()
@@ -1490,7 +1580,12 @@ namespace PackageBundlerTool
         void AddSource(string path)
         {
             path = Norm(path);
-            if (cfg.sources.Any(s => SamePath(s.path, path))) return;
+            var already = cfg.sources.FirstOrDefault(s => SamePath(s.path, path));
+            if (already != null)
+            {
+                if (already.removed) { already.removed = false; Save(); RefreshAll(); }
+                return;
+            }
             if (SamePath(path, cfg.outputPath))
             {
                 EditorUtility.DisplayDialog(Txt.Tr("dlg_title"), Txt.Tr("dlg_self_add"), Txt.Tr("dlg_ok"));
@@ -1498,7 +1593,7 @@ namespace PackageBundlerTool
             }
 
             var stem = VersionUtil.Stem(path);
-            var same = stem.Length >= 2 ? cfg.sources.FirstOrDefault(s => VersionUtil.Stem(s.path) == stem) : null;
+            var same = stem.Length >= 2 ? cfg.sources.FirstOrDefault(s => !s.removed && VersionUtil.Stem(s.path) == stem) : null;
             if (same != null && EditorUtility.DisplayDialog(Txt.Tr("dlg_title"),
                     Txt.F("dlg_other_ver", Path.GetFileName(path), Path.GetFileName(same.path)),
                     Txt.Tr("dlg_btn_replace"), Txt.Tr("dlg_btn_add_sep")))
@@ -1515,8 +1610,20 @@ namespace PackageBundlerTool
 
         bool DoBuild()
         {
-            var srcs = cfg.sources.Where(s => s.enabled).Select(s => s.path).ToList();
+            // 中身は保存済みと同じで、外した行を片付けるだけなら作り直さない
+            bool built = !string.IsNullOrEmpty(cfg.outputPath) && File.Exists(cfg.outputPath);
+            if ((built && cfg.lastBuildSignature == Signature()) || !cfg.sources.Any(x => x.Live))
+            {
+                PurgeRemoved();
+                RefreshAll();
+                ShowBadge();
+                return true;
+            }
+
+            // 上にあるほど優先 = 合成では最後に重ねる
+            var srcs = cfg.sources.Where(s => s.Live).Select(s => s.path).Reverse().ToList();
             bool ok = BuildTo(srcs, cfg.outputPath, true);
+            if (ok) PurgeRemoved();
             RefreshAll();
             if (ok) ShowBadge();
             return ok;
@@ -1580,7 +1687,7 @@ namespace PackageBundlerTool
 
         void ImportToProject()
         {
-            var enabledSources = cfg.sources.Where(s => s.enabled).ToList();
+            var enabledSources = cfg.sources.Where(s => s.Live).ToList();
             var selected = SelectedSources();
             if (selected.Count == 0) return;
 
@@ -1588,7 +1695,7 @@ namespace PackageBundlerTool
             {
                 // 一部だけ: 選んだものだけで一時パッケージを作ってインポート
                 var tmp = Path.GetFullPath(Path.Combine(Application.dataPath, "../Temp/PackageBundler_Selected.unitypackage"));
-                if (!BuildTo(selected.Select(s => s.path).ToList(), tmp, false)) return;
+                if (!BuildTo(selected.Select(s => s.path).Reverse().ToList(), tmp, false)) return;
                 AssetDatabase.ImportPackage(tmp, interactiveImport);
                 return;
             }
@@ -1652,7 +1759,7 @@ namespace PackageBundlerTool
         string Signature()
         {
             var sb = new StringBuilder();
-            foreach (var s in cfg.sources.Where(x => x.enabled))
+            foreach (var s in cfg.sources.Where(x => x.Live))
             {
                 sb.Append(s.path).Append('|');
                 if (File.Exists(s.path))
@@ -1676,7 +1783,7 @@ namespace PackageBundlerTool
             listed.Add(Norm(cfg.outputPath));
             var cache = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
 
-            foreach (var s in cfg.sources)
+            foreach (var s in cfg.sources.Where(x => !x.removed))
             {
                 var stem = VersionUtil.Stem(s.path);
                 if (stem.Length < 2) continue;
