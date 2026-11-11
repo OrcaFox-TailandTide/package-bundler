@@ -77,7 +77,7 @@ A の方法で入れていた場合、`Assets/PackageBundler` は自動で取り
 | --- | --- | --- |
 | 1 | 言語切り替え | 日本語／英語 |
 | 2 | パッケージの一覧 | 登録したパッケージ（下で説明） |
-| 3 | 追加エリア | クリックしてファイルを選びます。ドラッグ＆ドロップはウィンドウのどこでも OK |
+| 3 | 追加エリア | クリックしてファイルを選びます。ドラッグ＆ドロップはウィンドウのどこでも OK。`.unitypackage` も BOOTH の `.zip` もそのまま入れられます |
 | 4 | このツール自身もまとめに入れる | オンにすると、まとめを入れたプロジェクトですぐこのツールが使えます（VCC 版では表示されません） |
 | 5 | 設定 | まとめの保存先と、中身の更新版を探す場所を設定します |
 | 6 | 作成ボタン | まとめパッケージを作ります |
@@ -98,12 +98,12 @@ A の方法で入れていた場合、`Assets/PackageBundler` は自動で取り
 #### パッケージを追加する
 
 - 一覧にあるパッケージの別バージョンを入れると、差し替えるか聞かれます（「別のパッケージとして追加」も選べます）。
-- BOOTH の zip は、先に解凍して中の `.unitypackage` を登録してください。
+- BOOTH の zip は解凍しなくて OK です。中の `.unitypackage` を取り出して登録します（複数入っているときは、登録するものを選ぶ画面が出ます）。
 - lilToon や Modular Avatar など、**VCC で入れているものは登録しないでください**（二重に入ります）。
 
 #### 更新版のお知らせ
 
-一覧のパッケージと同じフォルダや、設定の「更新版を探す場所」に新しいバージョンがあると、その行に「**更新版？ ○○**　［これに差し替え］」と出ます。ファイル名が同じで、番号が大きいものを更新版とみなします（例: `lilToon_1.8.3` → `lilToon_1.9.0`）。
+一覧のパッケージと同じフォルダや、設定の「更新版を探す場所」に新しいバージョンがあると（zip の中も探します）、その行に「**更新版？ ○○**　［これに差し替え］」と出ます。ファイル名が同じで、番号が大きいものを更新版とみなします（例: `lilToon_1.8.3` → `lilToon_1.9.0`）。
 
 <a id="usage-import"></a>
 
@@ -204,7 +204,7 @@ VCC 版が入っているプロジェクトに、.unitypackage 版（または�
 - **Requirements**: Unity 2022.3.22f1 (VRChat), Windows recommended.
 - **Install** (choose one): import `PackageBundler_v0.0.0.unitypackage` via *Assets → Import Package → Custom Package...*, or add `https://orcafox-tailandtide.github.io/package-bundler/index.json` to VCC / ALCOM. Installing the VCC version removes the old `Assets/PackageBundler` folder.
 - **Open**: *Tools → Package Bundler*. Switch the language with the toggle at the top right.
-- **Bundle tab**: drop packages anywhere in the window, drag ≡ to reorder (higher entries win when files overlap), replace or remove them (*Undo* is available until you save), and press *Build bundle* / *Save changes*. Newer versions found next to your packages or in the update search folder are shown with a *Replace* button.
+- **Bundle tab**: drop packages (or BOOTH .zip files as they are) anywhere in the window, drag ≡ to reorder (higher entries win when files overlap), replace or remove them (*Undo* is available until you save), and press *Build bundle* / *Save changes*. Newer versions found next to your packages or in the update search folder are shown with a *Replace* button.
 - **Import tab**: pick or create a preset, check the packages to include (changes are saved automatically), and press *Import*. The chosen preset is remembered per project.
 - **Uninstall**: delete `Assets/PackageBundler`, or remove the package in VCC.
 - **Terms**: redistribution is prohibited. Commercial use is prohibited.

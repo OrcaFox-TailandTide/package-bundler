@@ -82,10 +82,10 @@ namespace PackageBundlerTool
             ["log_title"]      = new[] { "前回の結果", "Last result" },
 
             // まとめる
-            ["drop_big"]       = new[] { "ここに .unitypackage をドラッグ＆ドロップ\nクリックしてファイルを選ぶこともできます", "Drag & drop .unitypackage files here\nor click to choose a file" },
-            ["drop_compact"]   = new[] { "＋ ドロップ または クリックで追加", "+ Drop or click to add" },
-            ["tip_drop"]       = new[] { "ウィンドウのどこにドロップしても追加できます。更新版を入れると、差し替えるか聞きます。",
-                                         "Drop anywhere in the window to add. Dropping a newer version offers to replace the old one." },
+            ["drop_big"]       = new[] { "ここに .unitypackage か .zip をドラッグ＆ドロップ\nクリックしてファイルを選ぶこともできます", "Drag & drop .unitypackage or .zip files here\nor click to choose a file" },
+            ["drop_compact"]   = new[] { "＋ .unitypackage / .zip をドロップ または クリックで追加", "+ Drop .unitypackage / .zip or click to add" },
+            ["tip_drop"]       = new[] { "ウィンドウのどこにドロップしても追加できます（BOOTH の zip のままでも OK）。更新版を入れると、差し替えるか聞きます。",
+                                         "Drop anywhere in the window to add (BOOTH zip files work too). Dropping a newer version offers to replace the old one." },
             ["missing_suffix"] = new[] { "（ファイルが見つかりません）", " (file not found)" },
             ["newer_label"]    = new[] { "更新版？ {0}", "Newer version? {0}" },
             ["btn_use_newer"]  = new[] { "これに差し替え", "Replace" },
@@ -150,7 +150,13 @@ namespace PackageBundlerTool
             ["dlg_preset_del"] = new[] { "プリセット「{0}」を削除しますか？", "Delete the preset \"{0}\"?" },
             ["dlg_name_dup"]   = new[] { "同じ名前のプリセットがあります。別の名前にしてください。", "A preset with that name already exists." },
             ["dlg_btn_delete"] = new[] { "削除", "Delete" },
-            ["pick_package"]   = new[] { ".unitypackage を選択", "Select a .unitypackage" },
+            ["pick_package"]   = new[] { ".unitypackage または .zip を選択", "Select a .unitypackage or .zip" },
+            ["zip_none"]       = new[] { "「{0}」の中に .unitypackage が見つかりませんでした。", "No .unitypackage was found in \"{0}\"." },
+            ["zip_fail"]       = new[] { "「{0}」を開けませんでした。\n{1}", "Could not open \"{0}\".\n{1}" },
+            ["zip_pick_title"] = new[] { "登録するパッケージを選ぶ", "Choose packages to add" },
+            ["zip_pick_msg"]   = new[] { "「{0}」には複数の .unitypackage が入っています。登録するものにチェックを付けてください。", "\"{0}\" contains several .unitypackage files. Check the ones to add." },
+            ["zip_pick_one"]   = new[] { "「{0}」には複数の .unitypackage が入っています。使うものを 1 つ選んでください。", "\"{0}\" contains several .unitypackage files. Choose one to use." },
+            ["btn_add"]        = new[] { "登録する", "Add" },
             ["pick_output"]    = new[] { "まとめパッケージの保存先", "Bundle output path" },
             ["pick_watch"]     = new[] { "更新版を探すフォルダ（ダウンロードフォルダなど）", "Folder to search for updates (e.g. Downloads)" },
 
@@ -192,6 +198,7 @@ namespace PackageBundlerTool
         public string path = "";
         public bool enabled = true; // まとめパッケージに入れるか
         public bool removed;        // ×で外した（保存するまでは「元に戻す」で戻せる）
+        public string origin = "";  // zip から取り出したときの元の zip（更新版を探す場所に使う）
         public bool Live { get { return enabled && !removed; } }
     }
 
@@ -660,10 +667,194 @@ namespace PackageBundlerTool
     }
 
     // ================================================================== バージョン判定
+    // ================================================================== zip の中の .unitypackage
+    /// <summary>
+    /// BOOTH の zip を解凍せずに扱う。zip 内のファイルは「zipのパス::中のパス」という文字列で表す。
+    /// 取り出したものは %LOCALAPPDATA%\UnityPackageBundler\FromZip に置き、使われなくなったら消す。
+    /// </summary>
+    internal static class ZipUtil
+    {
+        public const string Sep = "::";
+
+        public static bool IsZip(string p) { return p != null && p.EndsWith(".zip", StringComparison.OrdinalIgnoreCase) && !p.Contains(Sep); }
+        public static bool IsRef(string p) { return p != null && p.Contains(Sep); }
+        public static string ZipOf(string r) { return r.Substring(0, r.IndexOf(Sep, StringComparison.Ordinal)); }
+        public static string EntryOf(string r) { return r.Substring(r.IndexOf(Sep, StringComparison.Ordinal) + Sep.Length); }
+
+        public static string ExtractRoot
+        {
+            get
+            {
+                return Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "UnityPackageBundler", "FromZip");
+            }
+        }
+
+        // BOOTH の zip は日本語名が Shift_JIS のことがある（UTF-8 の印があるものは自動で UTF-8 になる）
+        static Encoding NameEncoding()
+        {
+            try { return Encoding.GetEncoding(932); } catch (Exception) { return null; }
+        }
+
+        static ZipArchive Open(Stream fs)
+        {
+            var enc = NameEncoding();
+            return enc != null ? new ZipArchive(fs, ZipArchiveMode.Read, false, enc) : new ZipArchive(fs, ZipArchiveMode.Read);
+        }
+
+        // 中身の一覧はファイルの更新日時ごとに覚えておく（ウィンドウを選ぶたびに読み直さない）
+        static readonly Dictionary<string, KeyValuePair<DateTime, List<string>>> cache =
+            new Dictionary<string, KeyValuePair<DateTime, List<string>>>(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>zip 内の .unitypackage を「zip::中のパス」の形で返す。開けなければ例外。</summary>
+        public static List<string> ListPackages(string zip)
+        {
+            var t = File.GetLastWriteTimeUtc(zip);
+            KeyValuePair<DateTime, List<string>> hit;
+            lock (cache) { if (cache.TryGetValue(zip, out hit) && hit.Key == t) return hit.Value; }
+
+            var list = new List<string>();
+            using (var fs = File.OpenRead(zip))
+            using (var za = Open(fs))
+            {
+                foreach (var e in za.Entries)
+                {
+                    if (e.FullName.EndsWith("/")) continue;
+                    if (e.FullName.StartsWith("__MACOSX/", StringComparison.OrdinalIgnoreCase)) continue;
+                    if (e.Name.StartsWith("._")) continue;
+                    if (e.FullName.EndsWith(".unitypackage", StringComparison.OrdinalIgnoreCase))
+                        list.Add(zip + Sep + e.FullName);
+                }
+            }
+            lock (cache) { cache[zip] = new KeyValuePair<DateTime, List<string>>(t, list); }
+            return list;
+        }
+
+        /// <summary>zip 内の 1 つを取り出して、そのファイルのパスを返す。</summary>
+        public static string Extract(string zipRef)
+        {
+            string zip = ZipOf(zipRef), entryName = EntryOf(zipRef);
+            var dir = Path.Combine(ExtractRoot, Safe(Path.GetFileNameWithoutExtension(zip)));
+            Directory.CreateDirectory(dir);
+            var dst = Path.Combine(dir, Safe(Path.GetFileName(entryName.Replace('\\', '/'))));
+            using (var fs = File.OpenRead(zip))
+            using (var za = Open(fs))
+            {
+                var e = za.Entries.FirstOrDefault(x => x.FullName == entryName);
+                if (e == null) throw new FileNotFoundException(entryName);
+                using (var src = e.Open())
+                using (var outFs = File.Create(dst))
+                    src.CopyTo(outFs);
+            }
+            File.SetLastWriteTimeUtc(dst, File.GetLastWriteTimeUtc(zip));
+            return dst;
+        }
+
+        static string Safe(string name)
+        {
+            foreach (var c in Path.GetInvalidFileNameChars()) name = name.Replace(c, '_');
+            return name;
+        }
+
+        public static bool IsExtracted(string path)
+        {
+            try { return Path.GetFullPath(path).StartsWith(Path.GetFullPath(ExtractRoot), StringComparison.OrdinalIgnoreCase); }
+            catch (Exception) { return false; }
+        }
+
+        /// <summary>取り出したファイルのうち、もう一覧にないものを消す。</summary>
+        public static void Cleanup(IEnumerable<string> inUse)
+        {
+            try
+            {
+                if (!Directory.Exists(ExtractRoot)) return;
+                var keep = new HashSet<string>(inUse.Where(p => !string.IsNullOrEmpty(p)).Select(p =>
+                {
+                    try { return Path.GetFullPath(p); } catch (Exception) { return p; }
+                }), StringComparer.OrdinalIgnoreCase);
+                foreach (var f in Directory.GetFiles(ExtractRoot, "*.unitypackage", SearchOption.AllDirectories))
+                    if (!keep.Contains(Path.GetFullPath(f))) File.Delete(f);
+                foreach (var d in Directory.GetDirectories(ExtractRoot))
+                    if (!Directory.EnumerateFileSystemEntries(d).Any()) Directory.Delete(d);
+            }
+            catch (Exception) { /* 消せなくても動作には影響しない */ }
+        }
+
+        public static DateTime TimeOf(string p)
+        {
+            var real = IsRef(p) ? ZipOf(p) : p;
+            return File.Exists(real) ? File.GetLastWriteTimeUtc(real) : DateTime.MinValue;
+        }
+    }
+
+    // ================================================================== zip に複数入っていたときの選択画面
+    internal class ZipPickWindow : EditorWindow
+    {
+        List<string> items;
+        bool[] on;
+        bool single;
+        int chosen;
+        string message;
+        Action<List<string>> done;
+        Vector2 scroll;
+
+        public static void Show(string zip, List<string> refs, bool single, Action<List<string>> done)
+        {
+            var w = CreateInstance<ZipPickWindow>();
+            w.titleContent = new GUIContent(Txt.Tr("zip_pick_title"));
+            w.items = refs;
+            w.on = new bool[refs.Count];
+            w.single = single;
+            w.message = Txt.F(single ? "zip_pick_one" : "zip_pick_msg", Path.GetFileName(zip));
+            w.done = done;
+            w.minSize = new Vector2(420, 160 + 22 * Math.Min(refs.Count, 10));
+            w.maxSize = new Vector2(900, 900);
+            w.ShowUtility();
+        }
+
+        void OnGUI()
+        {
+            if (items == null) { Close(); return; }
+            EditorGUILayout.Space(6);
+            EditorGUILayout.LabelField(message, EditorStyles.wordWrappedLabel);
+            EditorGUILayout.Space(4);
+            scroll = EditorGUILayout.BeginScrollView(scroll);
+            for (int i = 0; i < items.Count; i++)
+            {
+                var label = Path.GetFileName(ZipUtil.EntryOf(items[i]).Replace('\\', '/'));
+                if (single)
+                {
+                    if (EditorGUILayout.ToggleLeft(label, chosen == i)) chosen = i;
+                }
+                else on[i] = EditorGUILayout.ToggleLeft(label, on[i]);
+            }
+            EditorGUILayout.EndScrollView();
+            GUILayout.FlexibleSpace();
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                GUILayout.FlexibleSpace();
+                if (GUILayout.Button(Txt.Tr("dlg_cancel"), GUILayout.Width(110))) { done = null; Close(); }
+                GUI.enabled = single || on.Any(x => x);
+                if (GUILayout.Button(Txt.Tr("btn_add"), GUILayout.Width(110)))
+                {
+                    var picked = single ? new List<string> { items[chosen] }
+                                        : items.Where((x, i) => on[i]).ToList();
+                    var cb = done; done = null;
+                    Close();
+                    if (cb != null) cb(picked);
+                }
+                GUI.enabled = true;
+            }
+            EditorGUILayout.Space(6);
+        }
+    }
+
     internal static class VersionUtil
     {
         static string Clean(string path)
         {
+            if (ZipUtil.IsRef(path)) path = ZipUtil.EntryOf(path).Replace('\\', '/');
             var n = Path.GetFileNameWithoutExtension(path ?? "");
             return Regex.Replace(n, @"\s*\(\d+\)$", "");
         }
@@ -700,8 +891,8 @@ namespace PackageBundlerTool
             var a = Version(candidate);
             var b = Version(current);
             if (a.Length > 0 && b.Length > 0) return Compare(a, b) > 0;
-            var ta = File.GetLastWriteTimeUtc(candidate);
-            var tb = File.Exists(current) ? File.GetLastWriteTimeUtc(current) : DateTime.MinValue;
+            var ta = ZipUtil.TimeOf(candidate);
+            var tb = ZipUtil.TimeOf(current);
             return ta > tb;
         }
     }
@@ -762,6 +953,12 @@ namespace PackageBundlerTool
             interactiveImport = EditorPrefs.GetBool(PrefInteractive, true);
             selectedPresetId = EditorPrefs.GetString(PrefPreset, "");
             showLog = EditorPrefs.GetBool(PrefShowLog, false);
+            EditorApplication.update += PollScan;
+        }
+
+        void OnDisable()
+        {
+            EditorApplication.update -= PollScan;
         }
 
         void OnFocus()
@@ -907,7 +1104,7 @@ namespace PackageBundlerTool
             dropZone.RegisterCallback<ClickEvent>(e =>
             {
                 var p = PickPackage(null);
-                if (p != null) AddSource(p);
+                if (p != null) AddFile(p);
             });
             card.Add(dropZone);
 
@@ -1254,7 +1451,7 @@ namespace PackageBundlerTool
                 var rep = new Button(() =>
                 {
                     var p = PickPackage(s.path);
-                    if (p != null) { s.path = p; Save(); RefreshAll(); }
+                    if (p != null) ResolveOne(p, real => SetSourcePath(s, real, ZipUtil.IsZip(p) ? Norm(p) : ""));
                 })
                 {
                     text = Txt.Tr(exists ? "btn_replace" : "btn_relocate"),
@@ -1275,11 +1472,11 @@ namespace PackageBundlerTool
                 {
                     var nrow = Row();
                     nrow.AddToClassList("pop-newer");
-                    var nl = new Label(Txt.F("newer_label", Path.GetFileNameWithoutExtension(cand)));
-                    nl.tooltip = Disp(cand);
+                    var nl = new Label(Txt.F("newer_label", Path.GetFileNameWithoutExtension(ZipUtil.IsRef(cand) ? ZipUtil.EntryOf(cand) : cand)));
+                    nl.tooltip = Disp(ZipUtil.IsRef(cand) ? ZipUtil.ZipOf(cand) : cand);
                     nl.AddToClassList("pop-newer-label");
                     nrow.Add(nl);
-                    var use = new Button(() => { s.path = cand; Save(); RefreshAll(); }) { text = Txt.Tr("btn_use_newer") };
+                    var use = new Button(() => ResolveOne(cand, real => SetSourcePath(s, real, ZipUtil.IsRef(cand) ? ZipUtil.ZipOf(cand) : ""))) { text = Txt.Tr("btn_use_newer") };
                     use.AddToClassList("pop-btn-sm");
                     use.AddToClassList("pop-btn-sm--sub");
                     nrow.Add(use);
@@ -1537,6 +1734,7 @@ namespace PackageBundlerTool
             cfg.sources.RemoveAll(x => x.removed);
             foreach (var p in cfg.presets) p.off.RemoveAll(id => gone.Contains(id));
             Save();
+            CleanupExtracted();
         }
 
         void RegisterDrop(VisualElement area)
@@ -1560,7 +1758,7 @@ namespace PackageBundlerTool
                 if (files.Length == 0) return;
                 DragAndDrop.AcceptDrag();
                 if (currentTab != 0) SelectTab(0);
-                foreach (var f in files) AddSource(f);
+                foreach (var f in files) AddFile(f);
             });
         }
 
@@ -1573,11 +1771,94 @@ namespace PackageBundlerTool
         static string[] DroppedPackages()
         {
             return (DragAndDrop.paths ?? new string[0])
-                .Where(p => p.EndsWith(".unitypackage", StringComparison.OrdinalIgnoreCase))
+                .Where(p => p.EndsWith(".unitypackage", StringComparison.OrdinalIgnoreCase) || ZipUtil.IsZip(p))
                 .ToArray();
         }
 
-        void AddSource(string path)
+        /// <summary>.unitypackage はそのまま、zip は中の .unitypackage を取り出して登録する。</summary>
+        void AddFile(string path)
+        {
+            if (!ZipUtil.IsZip(path)) { AddSource(path); return; }
+            List<string> refs;
+            if (!TryListZip(path, out refs)) return;
+            if (refs.Count == 1) { AddExtracted(refs, path); return; }
+            ZipPickWindow.Show(path, refs, false, picked => AddExtracted(picked, path));
+        }
+
+        void AddExtracted(List<string> refs, string zip)
+        {
+            foreach (var r in refs)
+            {
+                string real;
+                if (!TryExtract(r, out real)) continue;
+                AddSource(real, Norm(zip));
+            }
+        }
+
+        /// <summary>1 つだけ使う場面（差し替え・更新版）。zip なら取り出してから渡す。</summary>
+        void ResolveOne(string path, Action<string> use)
+        {
+            if (ZipUtil.IsRef(path))
+            {
+                string real;
+                if (TryExtract(path, out real)) use(real);
+                return;
+            }
+            if (!ZipUtil.IsZip(path)) { use(path); return; }
+            List<string> refs;
+            if (!TryListZip(path, out refs)) return;
+            Action<List<string>> pick = picked =>
+            {
+                string real;
+                if (picked.Count > 0 && TryExtract(picked[0], out real)) use(real);
+            };
+            if (refs.Count == 1) pick(refs);
+            else ZipPickWindow.Show(path, refs, true, pick);
+        }
+
+        void SetSourcePath(BundlerSource s, string real, string origin)
+        {
+            s.path = Norm(real);
+            s.origin = origin ?? "";
+            Save();
+            CleanupExtracted();
+            RefreshAll();
+        }
+
+        bool TryListZip(string zip, out List<string> refs)
+        {
+            refs = null;
+            try { refs = ZipUtil.ListPackages(zip); }
+            catch (Exception e)
+            {
+                EditorUtility.DisplayDialog(Txt.Tr("dlg_title"), Txt.F("zip_fail", Path.GetFileName(zip), e.Message), Txt.Tr("dlg_ok"));
+                return false;
+            }
+            if (refs.Count == 0)
+            {
+                EditorUtility.DisplayDialog(Txt.Tr("dlg_title"), Txt.F("zip_none", Path.GetFileName(zip)), Txt.Tr("dlg_ok"));
+                return false;
+            }
+            return true;
+        }
+
+        static bool TryExtract(string zipRef, out string real)
+        {
+            real = null;
+            try { real = ZipUtil.Extract(zipRef); return true; }
+            catch (Exception e)
+            {
+                EditorUtility.DisplayDialog(Txt.Tr("dlg_title"), Txt.F("zip_fail", Path.GetFileName(ZipUtil.ZipOf(zipRef)), e.Message), Txt.Tr("dlg_ok"));
+                return false;
+            }
+        }
+
+        void CleanupExtracted()
+        {
+            ZipUtil.Cleanup(cfg.sources.Select(x => x.path));
+        }
+
+        void AddSource(string path, string origin = "")
         {
             path = Norm(path);
             var already = cfg.sources.FirstOrDefault(s => SamePath(s.path, path));
@@ -1599,12 +1880,14 @@ namespace PackageBundlerTool
                     Txt.Tr("dlg_btn_replace"), Txt.Tr("dlg_btn_add_sep")))
             {
                 same.path = path;
+                same.origin = origin;
             }
             else
             {
-                cfg.sources.Add(new BundlerSource { id = Guid.NewGuid().ToString("N"), path = path });
+                cfg.sources.Add(new BundlerSource { id = Guid.NewGuid().ToString("N"), path = path, origin = origin });
             }
             Save();
+            CleanupExtracted();
             RefreshAll();
         }
 
@@ -1774,24 +2057,63 @@ namespace PackageBundlerTool
         }
 
         // -------------------------------------------------------------- 更新版の検出
+        // 探す場所には zip がたくさんあることがあるので、裏で探して見つかったら表示を更新する
+        int scanGen;
+        readonly object scanLock = new object();
+        Dictionary<string, string> scanResult;
+        int scanResultGen;
+
         void RefreshCandidates()
         {
-            newer.Clear();
             if (cfg == null) return;
-
-            var listed = new HashSet<string>(cfg.sources.Select(s => Norm(s.path)), StringComparer.OrdinalIgnoreCase);
+            int gen = ++scanGen;
+            var sources = cfg.sources.Where(x => !x.removed).Select(x => new[] { x.path, x.origin ?? "" }).ToList();
+            var listed = new HashSet<string>(cfg.sources.Select(x => Norm(x.path)), StringComparer.OrdinalIgnoreCase);
             listed.Add(Norm(cfg.outputPath));
+            foreach (var x in cfg.sources) if (!string.IsNullOrEmpty(x.origin)) listed.Add(Norm(x.origin));
+            var watch = cfg.watchFolder;
+
+            System.Threading.Tasks.Task.Run(() =>
+            {
+                Dictionary<string, string> res;
+                try { res = FindNewer(sources, listed, watch); }
+                catch (Exception) { return; }
+                lock (scanLock) { scanResult = res; scanResultGen = gen; }
+            });
+        }
+
+        void PollScan()
+        {
+            Dictionary<string, string> res;
+            lock (scanLock)
+            {
+                if (scanResult == null) return;
+                if (scanResultGen != scanGen) { scanResult = null; return; }   // 古い結果は捨てる
+                res = scanResult;
+                scanResult = null;
+            }
+            bool same = res.Count == newer.Count && res.All(kv => { string v; return newer.TryGetValue(kv.Key, out v) && v == kv.Value; });
+            if (same) return;
+            newer.Clear();
+            foreach (var kv in res) newer[kv.Key] = kv.Value;
+            if (sourcesBox != null && dragFrom < 0) DrawSources();
+        }
+
+        static Dictionary<string, string> FindNewer(List<string[]> sources, HashSet<string> listed, string watch)
+        {
+            var result = new Dictionary<string, string>();
             var cache = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
 
-            foreach (var s in cfg.sources.Where(x => !x.removed))
+            foreach (var src in sources)
             {
-                var stem = VersionUtil.Stem(s.path);
+                string path = src[0], origin = src[1];
+                var stem = VersionUtil.Stem(path);
                 if (stem.Length < 2) continue;
 
                 var dirs = new List<KeyValuePair<string, int>>();
-                var own = SafeDir(s.path);
+                var own = SafeDir(string.IsNullOrEmpty(origin) ? path : origin);
                 if (!string.IsNullOrEmpty(own)) dirs.Add(new KeyValuePair<string, int>(own, 0));
-                if (!string.IsNullOrEmpty(cfg.watchFolder)) dirs.Add(new KeyValuePair<string, int>(cfg.watchFolder, 2));
+                if (!string.IsNullOrEmpty(watch)) dirs.Add(new KeyValuePair<string, int>(watch, 2));
 
                 string best = null;
                 foreach (var d in dirs)
@@ -1807,13 +2129,15 @@ namespace PackageBundlerTool
                     foreach (var f in files)
                     {
                         if (listed.Contains(Norm(f))) continue;
+                        if (!string.IsNullOrEmpty(origin) && ZipUtil.IsRef(f) && SamePath(ZipUtil.ZipOf(f), origin)) continue;
                         if (VersionUtil.Stem(f) != stem) continue;
-                        if (!VersionUtil.IsNewer(f, s.path)) continue;
+                        if (!VersionUtil.IsNewer(f, path)) continue;
                         if (best == null || VersionUtil.IsNewer(f, best)) best = f;
                     }
                 }
-                if (best != null) newer[s.path] = Norm(best);
+                if (best != null) result[path] = Norm(best);
             }
+            return result;
         }
 
         static void ListPackages(string dir, int depth, List<string> result)
@@ -1822,6 +2146,11 @@ namespace PackageBundlerTool
             {
                 if (!Directory.Exists(dir)) return;
                 result.AddRange(Directory.GetFiles(dir, "*.unitypackage", SearchOption.TopDirectoryOnly));
+                foreach (var zip in Directory.GetFiles(dir, "*.zip", SearchOption.TopDirectoryOnly))
+                {
+                    try { result.AddRange(ZipUtil.ListPackages(zip)); }
+                    catch (Exception) { /* 壊れた zip などは無視 */ }
+                }
                 if (depth > 0)
                     foreach (var sub in Directory.GetDirectories(dir))
                         ListPackages(sub, depth - 1, result);
@@ -1833,7 +2162,8 @@ namespace PackageBundlerTool
         static string PickPackage(string current)
         {
             var dir = string.IsNullOrEmpty(current) ? "" : (SafeDir(current) ?? "");
-            var p = EditorUtility.OpenFilePanel(Txt.Tr("pick_package"), dir, "unitypackage");
+            var p = EditorUtility.OpenFilePanelWithFilters(Txt.Tr("pick_package"), dir,
+                new[] { "Unity Package / zip", "unitypackage,zip" });
             return string.IsNullOrEmpty(p) ? null : Norm(p);
         }
 
@@ -1896,6 +2226,7 @@ namespace PackageBundlerTool
         static string Norm(string p)
         {
             if (string.IsNullOrEmpty(p)) return "";
+            if (ZipUtil.IsRef(p)) return p;   // zip の中を指す文字列はそのまま
             try { return Path.GetFullPath(p); } catch { return p; }
         }
 
