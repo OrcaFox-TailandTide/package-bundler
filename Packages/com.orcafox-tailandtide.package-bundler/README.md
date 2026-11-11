@@ -1,6 +1,6 @@
 # Package Bundler 説明書
 
-**バージョン 0.0.0**　／　作者: OrcaFox（Tail＆Tide）
+**バージョン 0.0.0**　／　Author: OrcaFox（Tail＆Tide）
 
 こんなことができる Unity エディタ拡張です！
 
