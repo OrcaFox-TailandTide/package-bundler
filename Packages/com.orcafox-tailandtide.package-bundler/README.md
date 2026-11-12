@@ -4,8 +4,8 @@
 
 こんなことができる Unity エディタ拡張です！
 
-- 毎回使用するツールなどを 1 つの `.unitypackage` にまとめる
-- 作成した `.unitypackage` を新規プロジェクトにボタン 1 つで追加
+- 既存プロジェクトやダウンロードした BOOTH 商品から、毎回使うツールなどを 1 つの「まとめパッケージ」にする
+- まとめパッケージを新規プロジェクトにボタン 1 つで追加
 - アバターごとに「入れる・入れない」を 1 つずつ選べるプリセット機能
 
 ---
@@ -16,7 +16,9 @@
 <a href="#env">1. 動作環境</a><br>
 <a href="#install">2. 導入のしかた</a><br>
 <a href="#usage">3. 使用方法</a><br>
-<span class="tree">├ <a href="#usage-bundle">まとめる</a></span><br>
+<span class="tree">├ <a href="#usage-project">既存プロジェクトからまとめパッケージを作成</a></span><br>
+<span class="tree">├ <a href="#usage-booth">ダウンロードした BOOTH 商品からまとめパッケージを作成</a></span><br>
+<span class="tree">├ <a href="#usage-bundle">パッケージの一覧と設定</a></span><br>
 <span class="tree">├ <a href="#usage-import">インポート</a></span><br>
 <span class="tree">└ <a href="#usage-preset">プリセット作成</a></span><br>
 <a href="#trouble">4. 困ったとき</a><br>
@@ -66,49 +68,85 @@ A の方法で入れていた場合、`Assets/PackageBundler` は自動で取り
 <a id="usage"></a>
 
 ## 3. 使用方法
+まとめパッケージの作り方は 2 通りあります。どちらも「まとめる」タブで行います。
+
+<a id="usage-project"></a>
+
+### 既存プロジェクトからまとめパッケージを作成
+既存プロジェクトに入っているツールなどから、まとめパッケージを作ります。<br>
+新しいプロジェクトを、既存プロジェクトと同じツールなどがそろった状態から始めたいときに便利です。
+
+#### ステップ 1　「このプロジェクトから追加」を押す
+
+<img src="Documentation~/img/10_project_step1.png" alt="「このプロジェクトから追加」" width="420">
+
+既存プロジェクトで Package Bundler を開き、「**このプロジェクトから追加**」（1）を押します。
+
+#### ステップ 2　入れるフォルダを選んで登録する
+
+<img src="Documentation~/img/11_project_pick.png" alt="フォルダを選ぶ画面" width="420">
+
+1. まとめパッケージに入れたいフォルダにチェック（1）を入れる
+2. パッケージ名（2）を確認する。元の `.unitypackage` が見つかったものは元の名前、見つからないものはフォルダ名が入ります（書き換えもできます）
+3. 「**登録する**」（3）を押す
+
+- 衣装やアバターなどは自動で最初からオフになっています。※ツールなどと一緒にパッケージしたい場合は手動でオンにしてください。
+- 元の名前で登録されたものには、更新版のお知らせも出ます。
+- すでに一覧にあるものと中身が同じときは、追加されません。
+
+<a id="usage-build"></a>
+
+#### ステップ 3　まとめパッケージを作成する
+<img src="Documentation~/img/12_project_build.png" alt="まとめパッケージを作成" width="420">
+
+1. 登録したものが一覧（1）に入ったことを確認する
+2. 「**まとめパッケージを作成**」（3）を押す
+
+- 「このツール自身もまとめに入れる」（2）をオンにすると、まとめパッケージを入れたプロジェクトですぐこのツールが使えます（VCC 版では表示されません）。
+- 作成するとボタンが「保存済み」になり、下の「保存先フォルダを開く」で作成したファイルの場所が開きます。一覧を変えると「変更を保存」になります。
+
+<a id="usage-booth"></a>
+
+### ダウンロードした BOOTH 商品からまとめパッケージを作成
+ダウンロードした `.unitypackage` や BOOTH の `.zip` から、まとめパッケージを作ります。
+
+#### ステップ 1　ファイルをドラッグ＆ドロップする
+
+<img src="Documentation~/img/20_booth_step1.png" alt="追加エリア" width="420">
+
+ファイルを追加エリア（1）にドラッグ＆ドロップします。ウィンドウのどこにドロップしても OK です。クリックしてファイルを選ぶこともできます。
+
+- BOOTH の zip は解凍しなくて OK です。中の `.unitypackage` を取り出して登録します（複数入っているときは、登録するものを選ぶ画面が出ます）。
+- 一覧にあるパッケージの別バージョンを入れると、差し替えるか聞かれます（「別のパッケージとして追加」も選べます）。
+- lilToon や Modular Avatar など、**VCC で入れているものは登録しないでください**（二重に入ります）。
+
+#### ステップ 2　まとめパッケージを作成する
+
+「既存プロジェクトから」の[ステップ 3](#usage-build)と同じです。
+
 <a id="usage-bundle"></a>
 
-### まとめる
-いつも入れるパッケージを登録して、1 つの「まとめパッケージ」を作るタブです。
-
-<img src="Documentation~/img/01_bundle.png" alt="「まとめる」タブ" width="420">
+### パッケージの一覧と設定
+<img src="Documentation~/img/30_list.png" alt="パッケージの一覧と設定" width="420">
 
 | 番号 | 名前 | できること |
 | --- | --- | --- |
-| 1 | 言語切り替え | 日本語／英語 |
-| 2 | パッケージの一覧 | 登録したパッケージ（下で説明） |
-| 3 | 追加エリア | クリックしてファイルを選びます。ドラッグ＆ドロップはウィンドウのどこでも OK。`.unitypackage` も BOOTH の `.zip` もそのまま入れられます |
-| 4 | このツール自身もまとめに入れる | オンにすると、まとめを入れたプロジェクトですぐこのツールが使えます（VCC 版では表示されません） |
-| 5 | 設定 | まとめの保存先と、中身の更新版を探す場所を設定します |
-| 6 | 作成ボタン | まとめパッケージを作ります |
-| 7 | 保存先フォルダを開く | 作成したまとめパッケージが入っているフォルダが開きます |
+| 1 | ≡ | ドラッグで並び順を変えます |
+| 2 | チェックボックス | まとめパッケージに入れるかどうか。外すと「インポート」タブにも出なくなります |
+| 3 | 差し替え | 別のファイル（更新版など）に入れ替えます |
+| 4 | × | 一覧から外します。保存するまでは「元に戻す」で戻せます |
+| 5 | 更新版のお知らせ | 新しいバージョンが見つかると出ます。「これに差し替え」で入れ替えます |
+| 6 | 設定 | まとめパッケージの保存先と、更新版を探す場所を設定します |
 
-#### パッケージの一覧の使い方
-
-| 部分 | 働き |
-| --- | --- |
-| チェックボックス | まとめに入れるかどうか。外すと「インポート」タブにも出なくなります |
-| ≡ | ドラッグで並び順を変えます |
-| 差し替え | 別のファイル（更新版など）に入れ替えます |
-| 参照先を変更 | ファイルが見つからないときに出ます。格納先を変えた場合は、ここで指定し直してください |
-| × | 一覧から外します。保存するまでは「元に戻す」で戻せます |
-
-※ 2 つのパッケージに同じファイルが入っていたら、上にある方の中身が使われます（例: 同じシェーダーを同梱しているツールなど）。
-
-#### パッケージを追加する
-
-- 一覧にあるパッケージの別バージョンを入れると、差し替えるか聞かれます（「別のパッケージとして追加」も選べます）。
-- BOOTH の zip は解凍しなくて OK です。中の `.unitypackage` を取り出して登録します（複数入っているときは、登録するものを選ぶ画面が出ます）。
-- lilToon や Modular Avatar など、**VCC で入れているものは登録しないでください**（二重に入ります）。
-
-#### 更新版のお知らせ
-
-一覧のパッケージと同じフォルダや、設定の「更新版を探す場所」に新しいバージョンがあると（zip の中も探します）、その行に「**更新版？ ○○**　［これに差し替え］」と出ます。ファイル名が同じで、番号が大きいものを更新版とみなします（例: `lilToon_1.8.3` → `lilToon_1.9.0`）。
+- 2 つのパッケージに同じファイルが入っていたら、上にある方の中身が使われます（例: 同じシェーダーを同梱しているツールなど）。
+- 更新版は、一覧のパッケージと同じフォルダと「更新版を探す場所」から探します（zip の中も探します）。ファイル名が同じで、番号が大きいものを更新版とみなします（例: `lilToon_1.8.3` → `lilToon_1.9.0`）。
+- ファイルが見つからないときは「参照先を変更」が出ます。格納先を変えた場合は、ここで指定し直してください。
+- 右上のボタンで日本語／英語を切り替えられます。
 
 <a id="usage-import"></a>
 
 ### インポート
-まとめたパッケージを、開いているプロジェクトに入れるタブです。
+まとめパッケージを、開いているプロジェクトに入れるタブです。
 
 <img src="Documentation~/img/02_import_all.png" alt="「インポート」タブ" width="420">
 
@@ -126,27 +164,27 @@ A の方法で入れていた場合、`Assets/PackageBundler` は自動で取り
 <a id="usage-preset"></a>
 
 ### プリセット作成
-アバターごとに入れる中身を変えたいときに作ります。例として、BodyMorphTool と MeshDeleterWithTexture を入れない「しなの用」を作ります。
+アバターごとに入れる中身を変えたいときに作ります。例として、Pose_v1.0 と Shader_v3.1 を入れない「マヌカ用」を作ります。
 
 #### ステップ 1　新しいプリセットを作る
 
 <img src="Documentation~/img/03_preset_name.png" alt="名前を入れるところ" width="420">
 
 1. **＋**（1）を押す
-2. 名前（2）に「しなの用」と入れる
+2. 名前（2）に「マヌカ用」と入れる
 3. **決定**（3）を押す（Enter でも可）
 
 チェックの状態は、それまで選んでいたプリセットからコピーされます。
 
 #### ステップ 2　入れないもののチェックを外す
 
-<img src="Documentation~/img/04_import_shinano.png" alt="しなの用プリセット" width="420">
+<img src="Documentation~/img/04_import_manuka.png" alt="マヌカ用プリセット" width="420">
 
-1. プリセットが「しなの用」になっている（1）
+1. プリセットが「マヌカ用」になっている（1）
 2. チェックの変更は**自動で保存**されます（2）
 3. 「全部オン／全部オフ」（3）でまとめて切り替えられます
 4. 入れないもののチェックを外す（5）。入れる数（4）も変わります
-5. 「**『しなの用』でインポート**」（6）を押す
+5. 「**『マヌカ用』でインポート**」（6）を押す
 
 パッケージを更新版に差し替えても、プリセットはそのまま使えます。
 
@@ -199,12 +237,12 @@ VCC 版が入っているプロジェクトに、.unitypackage 版（または�
 <a id="english"></a>
 
 ## 8. English summary
-**Package Bundler** bundles the `.unitypackage` files you always import into one package, and lets you import it into a new project with one click. Presets let you choose what to import for each avatar.
+**Package Bundler** makes one *bundle package* from the tools in an existing project or from the BOOTH packages you downloaded, and lets you import it into a new project with one click. Presets let you choose what to import for each avatar.
 
 - **Requirements**: Unity 2022.3.22f1 (VRChat), Windows recommended.
 - **Install** (choose one): import `PackageBundler_v0.0.0.unitypackage` via *Assets → Import Package → Custom Package...*, or add `https://orcafox-tailandtide.github.io/package-bundler/index.json` to VCC / ALCOM. Installing the VCC version removes the old `Assets/PackageBundler` folder.
 - **Open**: *Tools → Package Bundler*. Switch the language with the toggle at the top right.
-- **Bundle tab**: drop packages (or BOOTH .zip files as they are) anywhere in the window, drag ≡ to reorder (higher entries win when files overlap), replace or remove them (*Undo* is available until you save), and press *Build bundle* / *Save changes*. Newer versions found next to your packages or in the update search folder are shown with a *Replace* button.
+- **Bundle tab**: drop packages (or BOOTH .zip files as they are) anywhere in the window, drag ≡ to reorder (higher entries win when files overlap), replace or remove them (*Undo* is available until you save), and press *Build bundle* / *Save changes*. *Add from this project* registers tools already in the open project (found original packages keep their names). Newer versions found next to your packages or in the update search folder are shown with a *Replace* button.
 - **Import tab**: pick or create a preset, check the packages to include (changes are saved automatically), and press *Import*. The chosen preset is remembered per project.
 - **Uninstall**: delete `Assets/PackageBundler`, or remove the package in VCC.
 - **Terms**: redistribution is prohibited. Commercial use is prohibited.

@@ -129,7 +129,7 @@ namespace PackageBundlerTool
             ["lbl_watch"]      = new[] { "更新版を探す場所", "Update search folder" },
             ["not_set"]        = new[] { "（未設定）", "(not set)" },
             ["btn_change"]     = new[] { "変更", "Change" },
-            ["toggle_self"]    = new[] { "このツール自身もまとめに入れる（新しいプロジェクトでもすぐ使えるように）", "Include this tool in the bundle (ready to use in new projects)" },
+            ["toggle_self"]    = new[] { "このツール自身もまとめに入れる", "Include this tool in the bundle" },
             ["toggle_interactive"] = new[] { "インポート前に中身の確認画面を出す", "Show the contents dialog before importing" },
 
             // ---- ダイアログ
@@ -157,6 +157,38 @@ namespace PackageBundlerTool
             ["zip_pick_msg"]   = new[] { "「{0}」には複数の .unitypackage が入っています。登録するものにチェックを付けてください。", "\"{0}\" contains several .unitypackage files. Check the ones to add." },
             ["zip_pick_one"]   = new[] { "「{0}」には複数の .unitypackage が入っています。使うものを 1 つ選んでください。", "\"{0}\" contains several .unitypackage files. Choose one to use." },
             ["btn_add"]        = new[] { "登録する", "Add" },
+            ["btn_from_project"] = new[] { "このプロジェクトから追加", "Add from this project" },
+            ["tip_from_project"] = new[] { "このプロジェクトの Assets に入っているツールなどを選んで、パッケージにして一覧に登録します。", "Pick tools and other folders in this project's Assets, export them as packages and add them to the list." },
+            ["note_from_project"] = new[] { "※初回は数分かかることがあります", "*The first time may take a few minutes" },
+            ["proj_title"]     = new[] { "このプロジェクトから追加", "Add from this project" },
+            ["proj_msg"]       = new[] { "登録するフォルダにチェックを付けてください。3D モデルが入っているフォルダ（アバター・衣装・髪型・アクセサリーなど）は、最初はチェックが外れています。", "Check the folders to add. Folders containing 3D models (avatars, outfits, hair, accessories) start unchecked." },
+            ["proj_note"]      = new[] { "※ VCC で入れたツール（Packages フォルダ）は対象外です。VCC で入れ直してください。", "Tools installed with VCC (the Packages folder) are not listed. Add them again with VCC." },
+            ["proj_none"]      = new[] { "追加できるフォルダが Assets にありません。", "There are no folders in Assets to add." },
+            ["proj_kind_model"] = new[] { "モデル入り", "Has models" },
+            ["proj_kind_code"] = new[] { "ツール・シェーダー", "Tool / shader" },
+            ["proj_kind_anim"] = new[] { "アニメ・設定", "Animation / settings" },
+            ["proj_kind_other"] = new[] { "その他", "Other" },
+            ["proj_exporting"] = new[] { "パッケージにしています: {0}", "Exporting: {0}" },
+            ["proj_comparing"] = new[] { "一覧のパッケージと中身を比べています: {0}", "Comparing with the list: {0}" },
+            ["proj_skipped"]   = new[] { "次のフォルダは、同じ中身のパッケージがすでに一覧にあるので追加しませんでした。\n\n{0}", "These folders were not added because a package with the same contents is already in the list.\n\n{0}" },
+            ["proj_other_ver"] = new[] { "「{0}」は「{1}」と中身の一部が違います（別のバージョンかもしれません）。\nどうしますか？", "\"{0}\" differs in part from \"{1}\" (it may be another version).\nWhat would you like to do?" },
+            ["proj_btn_skip"]  = new[] { "追加しない", "Don't add" },
+            ["proj_col_folder"] = new[] { "フォルダ", "Folder" },
+            ["proj_status_list"] = new[] { "元のファイルを探しています…（探す場所のフォルダを確認中。名前とチェックは、探し終わると自動で入ります）", "Looking for original files… (checking the search folder; names and checks are filled in when done)" },
+            ["proj_searching_head"] = new[] { "元のファイルを探しています。終わるとパッケージ名とチェックが自動で入ります。", "Looking for original files. Package names and checks are filled in when done." },
+            ["proj_eta"]       = new[] { "完了まで あと約 {0}", "About {0} left" },
+            ["proj_eta_calc"]  = new[] { "完了までの時間を計算しています…", "Estimating time left…" },
+            ["proj_eta_soon"]  = new[] { "まもなく完了します", "Almost done" },
+            ["proj_eta_list"]  = new[] { "探す場所のフォルダを確認しています…（数秒〜数十秒）", "Checking the search folder… (a few seconds to tens of seconds)" },
+            ["proj_row_wait"]  = new[] { "探し中…", "Searching…" },
+            ["proj_wait"]      = new[] { "元のファイルを探しています…", "Looking for original files…" },
+            ["proj_col_name"]  = new[] { "パッケージ名", "Package name" },
+            ["tip_proj_name"]  = new[] { "書き出すパッケージの名前です。元のファイルの名前（例: lilToon_1.8.3）にしておくと、更新版のお知らせが届きます。", "Name of the exported package. Using the original file name (e.g. lilToon_1.8.3) lets update notices work." },
+            ["proj_auto"]      = new[] { "元の名前", "Original" },
+            ["proj_from"]      = new[] { "見つかった元のファイル:\n{0}", "Original file found:\n{0}" },
+            ["proj_status_none"] = new[] { "「更新版を探す場所」が未設定なので、元のファイル名は探しません。", "No update search folder is set, so original file names are not looked up." },
+            ["proj_status_run"] = new[] { "元のファイルを探しています… {0} / {1}（{2}）", "Looking for original files… {0} / {1} ({2})" },
+            ["proj_status_done"] = new[] { "元のファイル探し完了: {0} 個を {1} で確認（新しく読んだのは {2} 個・{3}。次回は増えた分だけ読みます）", "Original file search done: checked {0} files in {1} (newly read {2}, {3}; next time only new files are read)" },
             ["pick_output"]    = new[] { "まとめパッケージの保存先", "Bundle output path" },
             ["pick_watch"]     = new[] { "更新版を探すフォルダ（ダウンロードフォルダなど）", "Folder to search for updates (e.g. Downloads)" },
 
@@ -509,9 +541,9 @@ namespace PackageBundlerTool
 
         static readonly Regex GuidRe = new Regex("^[0-9a-fA-F]{32}$");
 
-        static bool IsFile(char t) { return t == '0' || t == '7'; }
+        internal static bool IsFile(char t) { return t == '0' || t == '7'; }
 
-        static bool SplitEntry(string name, out string guid, out string file)
+        internal static bool SplitEntry(string name, out string guid, out string file)
         {
             guid = null; file = null;
             while (name.StartsWith("./")) name = name.Substring(2);
@@ -524,7 +556,7 @@ namespace PackageBundlerTool
             return true;
         }
 
-        static Stream OpenPackage(string path)
+        internal static Stream OpenPackage(string path)
         {
             return new GZipStream(new BufferedStream(File.OpenRead(path), 1 << 16), CompressionMode.Decompress);
         }
@@ -697,7 +729,7 @@ namespace PackageBundlerTool
             try { return Encoding.GetEncoding(932); } catch (Exception) { return null; }
         }
 
-        static ZipArchive Open(Stream fs)
+        internal static ZipArchive Open(Stream fs)
         {
             var enc = NameEncoding();
             return enc != null ? new ZipArchive(fs, ZipArchiveMode.Read, false, enc) : new ZipArchive(fs, ZipArchiveMode.Read);
@@ -708,6 +740,17 @@ namespace PackageBundlerTool
             new Dictionary<string, KeyValuePair<DateTime, List<string>>>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>zip 内の .unitypackage を「zip::中のパス」の形で返す。開けなければ例外。</summary>
+        static readonly Dictionary<string, long> entrySizes = new Dictionary<string, long>(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>実際に読む量。zip の中なら .unitypackage の部分だけ（zip 全体ではない）</summary>
+        public static long ReadSize(string p)
+        {
+            if (!IsRef(p)) return new FileInfo(p).Length;
+            long n;
+            lock (entrySizes) if (entrySizes.TryGetValue(p, out n)) return n;
+            return new FileInfo(ZipOf(p)).Length;
+        }
+
         public static List<string> ListPackages(string zip)
         {
             var t = File.GetLastWriteTimeUtc(zip);
@@ -724,7 +767,10 @@ namespace PackageBundlerTool
                     if (e.FullName.StartsWith("__MACOSX/", StringComparison.OrdinalIgnoreCase)) continue;
                     if (e.Name.StartsWith("._")) continue;
                     if (e.FullName.EndsWith(".unitypackage", StringComparison.OrdinalIgnoreCase))
+                    {
                         list.Add(zip + Sep + e.FullName);
+                        lock (entrySizes) entrySizes[zip + Sep + e.FullName] = e.CompressedLength;
+                    }
                 }
             }
             lock (cache) { cache[zip] = new KeyValuePair<DateTime, List<string>>(t, list); }
@@ -751,7 +797,7 @@ namespace PackageBundlerTool
             return dst;
         }
 
-        static string Safe(string name)
+        public static string Safe(string name)
         {
             foreach (var c in Path.GetInvalidFileNameChars()) name = name.Replace(c, '_');
             return name;
@@ -843,6 +889,783 @@ namespace PackageBundlerTool
                     var cb = done; done = null;
                     Close();
                     if (cb != null) cb(picked);
+                }
+                GUI.enabled = true;
+            }
+            EditorGUILayout.Space(6);
+        }
+    }
+
+    // ================================================================== 元のファイル探し
+    /// <summary>
+    /// 「更新版を探す場所」にある .unitypackage／zip の中身（GUID と中身のハッシュ）の一覧。
+    /// プロジェクトのフォルダから書き出すときに、元のファイル名を見つけるのに使う。
+    /// 一度読んだファイルは %LOCALAPPDATA%\UnityPackageBundler\content_index.bin に覚えておき、
+    /// 次回は増えた・変わったファイルだけ読む。重いので別スレッドで動かす。
+    /// </summary>
+    internal static class OriginIndex
+    {
+        public class Cand
+        {
+            public string path;
+            public long size, ticks;
+            public Guid[] guids;
+            public ulong[] hashes;
+        }
+
+        public static volatile bool Running, Done;
+        public static volatile int Total, Finished, NewlyRead;
+        public static long BytesRead, TotalBytes;
+        public static double ReadStart;                // 読み始めた時刻（EditorApplication とは別の時計）
+        static readonly System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+        public static double Now { get { return clock.Elapsed.TotalSeconds; } }
+
+        /// <summary>残りの見込み秒数。まだ見積もれないときは -1</summary>
+        public static double Remaining()
+        {
+            long done = System.Threading.Interlocked.Read(ref BytesRead);
+            double t = Now - ReadStart;
+            if (TotalBytes <= 0) return Total > 0 ? 0 : -1;   // 全部前回の結果で済むなら、すぐ終わる
+            if (done <= 0 || t < 5) return -1;
+            return Math.Max(0, t * (TotalBytes - done) / done);
+        }
+        public static double Seconds;
+        public static string Watch;
+        public static List<Cand> Cands = new List<Cand>();
+        public static Dictionary<Guid, List<KeyValuePair<int, ulong>>> Inv = new Dictionary<Guid, List<KeyValuePair<int, ulong>>>();
+        static DateTime finishedAt;
+
+        static string CachePath
+        {
+            get
+            {
+                return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "UnityPackageBundler", "content_index.bin");
+            }
+        }
+
+        static string extrasKey;
+
+        /// <param name="watch">更新版を探す場所（4 階層下まで）</param>
+        /// <param name="extras">一覧に登録済みのパッケージ。元のファイルそのものなので候補に入れる</param>
+        public static void Start(string watch, List<string> extras)
+        {
+            if (Running) return;
+            var key = string.Join("|", extras.OrderBy(x => x, StringComparer.OrdinalIgnoreCase));
+            if (Done && Watch == watch && extrasKey == key && (DateTime.Now - finishedAt).TotalMinutes < 3) return;
+            Running = true; Done = false;
+            Watch = watch; extrasKey = key; Total = 0; Finished = 0; NewlyRead = 0; BytesRead = 0; TotalBytes = 0;
+            System.Threading.Tasks.Task.Run(() => Run(watch, extras));
+        }
+
+        static void Run(string watch, List<string> extras)
+        {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+            var cands = new List<Cand>();
+            try
+            {
+                var paths = new List<string>();
+                if (!string.IsNullOrEmpty(watch) && Directory.Exists(watch))
+                    UnityPackageBundler.ListPackages(watch, 4, paths);
+                var seenPaths = new HashSet<string>(paths, StringComparer.OrdinalIgnoreCase);
+                foreach (var e in extras)
+                    if (File.Exists(e) && seenPaths.Add(e)) paths.Add(e);
+                Dictionary<string, Cand> old;
+                lock (fileLock) old = new Dictionary<string, Cand>(Known(), StringComparer.OrdinalIgnoreCase);
+                // 読む必要があるファイルの合計サイズ（残り時間の見積もりに使う）
+                long need = 0;
+                foreach (var p in paths)
+                {
+                    try
+                    {
+                        var real = ZipUtil.IsRef(p) ? ZipUtil.ZipOf(p) : p;
+                        var fi = new FileInfo(real);
+                        Cand oc;
+                        bool cached = old.TryGetValue(p, out oc) && oc.size == fi.Length && oc.ticks == fi.LastWriteTimeUtc.Ticks;
+                        if (!cached) need += ZipUtil.ReadSize(p);
+                    }
+                    catch (Exception) { }
+                }
+                TotalBytes = need;
+                ReadStart = Now;
+                Total = paths.Count;
+                var countedZips = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                foreach (var p in paths)
+                {
+                    try
+                    {
+                        var real = ZipUtil.IsRef(p) ? ZipUtil.ZipOf(p) : p;
+                        var fi = new FileInfo(real);
+                        Cand c;
+                        if (old.TryGetValue(p, out c) && c.size == fi.Length && c.ticks == fi.LastWriteTimeUtc.Ticks)
+                        {
+                            cands.Add(c);
+                        }
+                        else
+                        {
+                            c = Read(p);
+                            c.size = fi.Length; c.ticks = fi.LastWriteTimeUtc.Ticks;
+                            cands.Add(c);
+                            lock (fileLock) Known()[p] = c;
+                            NewlyRead++;
+                            if (NewlyRead % 30 == 0) SaveKnown();
+                            System.Threading.Interlocked.Add(ref BytesRead, ZipUtil.ReadSize(p));
+                        }
+                    }
+                    catch (Exception) { }
+                    Finished++;
+                }
+                // 消えたファイルの分は忘れる
+                lock (fileLock)
+                {
+                    foreach (var k in Known().Keys.ToList())
+                    {
+                        var real = ZipUtil.IsRef(k) ? ZipUtil.ZipOf(k) : k;
+                        if (!File.Exists(real)) Known().Remove(k);
+                    }
+                }
+                SaveKnown();
+            }
+            catch (Exception) { }
+
+            var inv = new Dictionary<Guid, List<KeyValuePair<int, ulong>>>();
+            for (int i = 0; i < cands.Count; i++)
+            {
+                var c = cands[i];
+                for (int k = 0; k < c.guids.Length; k++)
+                {
+                    List<KeyValuePair<int, ulong>> l;
+                    if (!inv.TryGetValue(c.guids[k], out l)) inv[c.guids[k]] = l = new List<KeyValuePair<int, ulong>>(1);
+                    l.Add(new KeyValuePair<int, ulong>(i, c.hashes[k]));
+                }
+            }
+            Cands = cands; Inv = inv;
+            Seconds = sw.Elapsed.TotalSeconds;
+            finishedAt = DateTime.Now;
+            Done = true; Running = false;
+        }
+
+        static Cand Read(string p)
+        {
+            var guids = new List<Guid>();
+            var hashes = new List<ulong>();
+            if (ZipUtil.IsRef(p))
+            {
+                var entryName = ZipUtil.EntryOf(p);
+                using (var fs = File.OpenRead(ZipUtil.ZipOf(p)))
+                using (var za = ZipUtil.Open(fs))
+                {
+                    var e = za.Entries.FirstOrDefault(x => x.FullName == entryName);
+                    if (e == null) throw new FileNotFoundException(entryName);
+                    using (var es = e.Open())
+                    using (var gz = new GZipStream(new BufferedStream(es, 1 << 16), CompressionMode.Decompress))
+                        ReadTar(gz, guids, hashes);
+                }
+            }
+            else
+            {
+                using (var gz = Bundler.OpenPackage(p))
+                    ReadTar(gz, guids, hashes);
+            }
+            return new Cand { path = p, guids = guids.ToArray(), hashes = hashes.ToArray() };
+        }
+
+        static void ReadTar(Stream st, List<Guid> guids, List<ulong> hashes)
+        {
+            var tr = new TarReader(st);
+            while (tr.Next())
+            {
+                string guid, file;
+                if (!Bundler.IsFile(tr.Type) || !Bundler.SplitEntry(tr.Name, out guid, out file)) continue;
+                if (file != "asset") continue;
+                Guid g;
+                if (!Guid.TryParseExact(guid, "N", out g)) continue;
+                using (var md5 = System.Security.Cryptography.MD5.Create())
+                using (var sink = new System.Security.Cryptography.CryptoStream(Stream.Null, md5, System.Security.Cryptography.CryptoStreamMode.Write))
+                {
+                    tr.CopyDataTo(sink);
+                    sink.FlushFinalBlock();
+                    guids.Add(g);
+                    hashes.Add(BitConverter.ToUInt64(md5.Hash, 0));
+                }
+            }
+        }
+
+        public static ulong HashFile(string path)
+        {
+            using (var md5 = System.Security.Cryptography.MD5.Create())
+            using (var fs = File.OpenRead(path))
+                return BitConverter.ToUInt64(md5.ComputeHash(fs), 0);
+        }
+
+        public static string DisplayName(Cand c)
+        {
+            var p = ZipUtil.IsRef(c.path) ? ZipUtil.EntryOf(c.path).Replace('\\', '/') : c.path;
+            return Path.GetFileNameWithoutExtension(p);
+        }
+
+        static Dictionary<string, Cand> Load()
+        {
+            var d = new Dictionary<string, Cand>(StringComparer.OrdinalIgnoreCase);
+            try
+            {
+                if (!File.Exists(CachePath)) return d;
+                using (var br = new BinaryReader(File.OpenRead(CachePath), Encoding.UTF8))
+                {
+                    if (br.ReadInt32() != 1) return d;
+                    int n = br.ReadInt32();
+                    for (int i = 0; i < n; i++)
+                    {
+                        var c = new Cand { path = br.ReadString(), size = br.ReadInt64(), ticks = br.ReadInt64() };
+                        int m = br.ReadInt32();
+                        c.guids = new Guid[m]; c.hashes = new ulong[m];
+                        for (int k = 0; k < m; k++) { c.guids[k] = new Guid(br.ReadBytes(16)); c.hashes[k] = br.ReadUInt64(); }
+                        d[c.path] = c;
+                    }
+                }
+            }
+            catch (Exception) { d.Clear(); }
+            return d;
+        }
+
+        // 一度読んだパッケージの中身。元のファイル探しと「同じ中身なら追加しない」の判定で共有して、PC に保存しておく
+        static readonly object fileLock = new object();
+        static Dictionary<string, Cand> known;
+
+        static Dictionary<string, Cand> Known()
+        {
+            if (known == null) known = Load();
+            return known;
+        }
+
+        /// <summary>パッケージの中身。前に読んでいて、ファイルが変わっていなければ読み直さない。</summary>
+        public static Cand Get(string path)
+        {
+            var real = ZipUtil.IsRef(path) ? ZipUtil.ZipOf(path) : path;
+            var fi = new FileInfo(real);
+            Cand c;
+            lock (fileLock)
+            {
+                if (Known().TryGetValue(path, out c) && c.size == fi.Length && c.ticks == fi.LastWriteTimeUtc.Ticks) return c;
+            }
+            c = Read(path);
+            c.size = fi.Length; c.ticks = fi.LastWriteTimeUtc.Ticks;
+            lock (fileLock) Known()[path] = c;
+            SaveKnown();
+            return c;
+        }
+
+        /// <summary>保存しないで読む（書き出したばかりの一時ファイル用）</summary>
+        public static Cand ReadOnce(string path) { return Read(path); }
+
+        public static Dictionary<Guid, ulong> ToMap(Cand c)
+        {
+            var d = new Dictionary<Guid, ulong>(c.guids.Length);
+            for (int k = 0; k < c.guids.Length; k++) d[c.guids[k]] = c.hashes[k];
+            return d;
+        }
+
+        static void SaveKnown()
+        {
+            lock (fileLock)
+            {
+                try
+                {
+                    var cands = Known().Values.ToList();
+                    Directory.CreateDirectory(Path.GetDirectoryName(CachePath));
+                    var tmp = CachePath + ".tmp";
+                    using (var bw = new BinaryWriter(File.Create(tmp), Encoding.UTF8))
+                    {
+                        bw.Write(1);
+                        bw.Write(cands.Count);
+                        foreach (var c in cands)
+                        {
+                            bw.Write(c.path); bw.Write(c.size); bw.Write(c.ticks);
+                            bw.Write(c.guids.Length);
+                            for (int k = 0; k < c.guids.Length; k++) { bw.Write(c.guids[k].ToByteArray()); bw.Write(c.hashes[k]); }
+                        }
+                    }
+                    if (File.Exists(CachePath)) File.Delete(CachePath);
+                    File.Move(tmp, CachePath);
+                }
+                catch (Exception) { }
+            }
+        }
+    }
+
+    // ================================================================== プロジェクト内のフォルダを選ぶ画面
+    internal class ProjectPickWindow : EditorWindow
+    {
+        public class Pick
+        {
+            public string[] assetPaths;
+            public string name;
+        }
+
+        /// <summary>
+        /// 元のパッケージのファイルだけでは動かないツール。一致したフォルダを丸ごと入れる。
+        /// MochiFitter: 元がベリル対応の衣装を別アバターに合わせるとき、ベリル本体のフォルダが必要になる。
+        /// </summary>
+        static readonly string[] WholeFolderTools = { "mochifitter" };
+
+        static bool NeedsWholeFolders(string originalName)
+        {
+            var stem = VersionUtil.Stem(originalName);
+            return WholeFolderTools.Any(t => stem.StartsWith(t));
+        }
+
+        class Node
+        {
+            public string dir, assetPath, name, exportName;
+            public string pkgName, matchFrom;   // 書き出す名前（元のファイルが見つかればその名前）
+            public int match = -1;              // 一致した元のパッケージ（OriginIndex.Cands の番号）
+            public bool nameEdited, matched;
+            public volatile bool scanned;
+            public Guid[] guids;
+            public ulong[] hashes;              // モデル入りのフォルダは重いので計算しない（null）
+            public int kind;        // 0 その他 / 1 モデル入り / 2 ツール・シェーダー / 3 アニメ・設定
+            public long bytes;
+            public bool on, open, hasSub;
+            public List<Node> children;
+        }
+
+        static readonly HashSet<string> ModelExt = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            { ".fbx", ".obj", ".blend", ".dae", ".vrm", ".glb", ".gltf", ".3ds", ".max", ".ma", ".mb" };
+        static readonly HashSet<string> CodeExt = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            { ".cs", ".dll", ".asmdef", ".shader", ".cginc", ".hlsl", ".shadergraph", ".compute", ".uss", ".uxml" };
+        static readonly HashSet<string> AnimExt = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            { ".anim", ".controller", ".overridecontroller", ".mask", ".playable", ".asset" };
+
+        List<Node> roots;
+        Action<List<Pick>> done;
+        Vector2 scroll;
+        string watch;
+        bool hasSearch;
+        double lastRepaint;
+
+        public static void Show(string watch, List<string> extras, Action<List<Pick>> done)
+        {
+            var list = new List<Node>();
+            try
+            {
+                var dirs = Directory.GetDirectories(Application.dataPath)
+                    .OrderBy(d => Path.GetFileName(d), StringComparer.OrdinalIgnoreCase).ToList();
+                for (int i = 0; i < dirs.Count; i++)
+                {
+                    var name = Path.GetFileName(dirs[i]);
+                    if (Hidden(name) || name == "PackageBundler") continue;   // このツール自身は「このツール自身もまとめに入れる」で扱う
+                    EditorUtility.DisplayProgressBar(Txt.Tr("proj_title"), name, (float)i / dirs.Count);
+                    list.Add(MakeNode(dirs[i], "Assets/" + name, name, name));
+                }
+            }
+            catch (Exception) { }
+            finally { EditorUtility.ClearProgressBar(); }
+
+            if (list.Count == 0)
+            {
+                EditorUtility.DisplayDialog(Txt.Tr("dlg_title"), Txt.Tr("proj_none"), Txt.Tr("dlg_ok"));
+                return;
+            }
+            var w = CreateInstance<ProjectPickWindow>();
+            w.titleContent = new GUIContent(Txt.Tr("proj_title"));
+            w.roots = list;
+            w.done = done;
+            w.watch = watch;
+            w.minSize = new Vector2(820, 240 + 22 * Math.Min(list.Count, 14));
+            w.hasSearch = (!string.IsNullOrEmpty(watch) && Directory.Exists(watch)) || extras.Count > 0;
+            if (w.hasSearch) OriginIndex.Start(watch, extras);
+            foreach (var n in list) ScanAsync(n);
+            w.maxSize = new Vector2(1000, 1000);
+            w.ShowUtility();
+        }
+
+        static bool Hidden(string name)
+        {
+            return name.StartsWith(".") || name.EndsWith("~");
+        }
+
+        // 中身で判定する: モデルが入っていればアバター・衣装類、なければツール・シェーダーやアニメ・設定
+        static Node MakeNode(string dir, string assetPath, string name, string exportName)
+        {
+            var n = new Node { dir = dir, assetPath = assetPath, name = name, exportName = exportName, pkgName = exportName };
+            bool model = false, code = false, anim = false, editor = false;
+            try
+            {
+                foreach (var f in new DirectoryInfo(dir).EnumerateFiles("*", SearchOption.AllDirectories))
+                {
+                    var ext = f.Extension;
+                    if (ext.Equals(".meta", StringComparison.OrdinalIgnoreCase)) continue;
+                    n.bytes += f.Length;
+                    if (ModelExt.Contains(ext)) model = true;
+                    else if (CodeExt.Contains(ext)) code = true;
+                    else if (AnimExt.Contains(ext)) anim = true;
+                    // エディタ用のスクリプト（Editor フォルダの .cs、.asmdef、.dll）はツールの目印
+                    if (!editor)
+                    {
+                        if (ext.Equals(".asmdef", StringComparison.OrdinalIgnoreCase) || ext.Equals(".dll", StringComparison.OrdinalIgnoreCase)) editor = true;
+                        else if (ext.Equals(".cs", StringComparison.OrdinalIgnoreCase))
+                        {
+                            var rel = f.FullName.Replace('\\', '/');
+                            if (rel.IndexOf("/Editor/", StringComparison.OrdinalIgnoreCase) >= 0) editor = true;
+                        }
+                    }
+                }
+                n.hasSub = Directory.EnumerateDirectories(dir).Any(d => !Hidden(Path.GetFileName(d)));
+            }
+            catch (Exception) { }
+            n.kind = editor ? 2 : model ? 1 : code ? 2 : anim ? 3 : 0;
+            n.on = n.kind == 2 || n.kind == 3;
+            return n;
+        }
+
+        void LoadChildren(Node n)
+        {
+            n.children = new List<Node>();
+            try
+            {
+                foreach (var d in Directory.GetDirectories(n.dir).OrderBy(x => Path.GetFileName(x), StringComparer.OrdinalIgnoreCase))
+                {
+                    var name = Path.GetFileName(d);
+                    if (Hidden(name)) continue;
+                    var c = MakeNode(d, n.assetPath + "/" + name, name, n.name + "_" + name);
+                    n.children.Add(c);
+                    ScanAsync(c);
+                }
+            }
+            catch (Exception) { }
+        }
+
+        // フォルダ内のファイルの GUID（.meta から）と中身のハッシュを裏で集める
+        static void ScanAsync(Node n)
+        {
+            System.Threading.Tasks.Task.Run(() =>
+            {
+                var guids = new List<Guid>();
+                var hashes = new List<ulong>();
+                bool hash = n.kind != 1;
+                try
+                {
+                    foreach (var f in Directory.EnumerateFiles(n.dir, "*", SearchOption.AllDirectories))
+                    {
+                        if (f.EndsWith(".meta", StringComparison.OrdinalIgnoreCase)) continue;
+                        var meta = f + ".meta";
+                        if (!File.Exists(meta)) continue;
+                        Guid g = Guid.Empty;
+                        foreach (var line in File.ReadLines(meta).Take(4))
+                        {
+                            var t = line.Trim();
+                            if (t.StartsWith("guid:") && Guid.TryParseExact(t.Substring(5).Trim(), "N", out g)) break;
+                        }
+                        if (g == Guid.Empty) continue;
+                        guids.Add(g);
+                        if (hash) hashes.Add(OriginIndex.HashFile(f));
+                    }
+                }
+                catch (Exception) { }
+                n.guids = guids.ToArray();
+                n.hashes = hash ? hashes.ToArray() : null;
+                n.scanned = true;
+            });
+        }
+
+        // 元のファイル探しが終わったら、各フォルダにいちばん合う元のファイル名を付ける
+        void Match(Node n)
+        {
+            n.matched = true;
+            if (n.guids == null || n.guids.Length == 0) return;
+            var overlap = new Dictionary<int, int>();
+            var equal = new Dictionary<int, int>();
+            var inv = OriginIndex.Inv;
+            for (int k = 0; k < n.guids.Length; k++)
+            {
+                List<KeyValuePair<int, ulong>> hits;
+                if (!inv.TryGetValue(n.guids[k], out hits)) continue;
+                foreach (var h in hits)
+                {
+                    int c;
+                    overlap.TryGetValue(h.Key, out c); overlap[h.Key] = c + 1;
+                    if (n.hashes != null && n.hashes[k] == h.Value) { equal.TryGetValue(h.Key, out c); equal[h.Key] = c + 1; }
+                }
+            }
+            int best = -1, bestEq = -1, bestOv = -1;
+            foreach (var kv in overlap)
+            {
+                int eq; equal.TryGetValue(kv.Key, out eq);
+                bool better = eq > bestEq || (eq == bestEq && kv.Value > bestOv)
+                    || (eq == bestEq && kv.Value == bestOv && best >= 0
+                        && VersionUtil.IsNewer(OriginIndex.Cands[kv.Key].path, OriginIndex.Cands[best].path));
+                if (better) { best = kv.Key; bestEq = eq; bestOv = kv.Value; }
+            }
+            if (best < 0) return;
+            var cand = OriginIndex.Cands[best];
+            // ツールが作ったメッシュなどが増えていても、元のパッケージのファイルが半分以上あれば一致とする。
+            // MochiFitter のように複数のフォルダに分かれて入るものは、フォルダの半分以上が元のパッケージ由来なら一致とする
+            bool coversOriginal = bestOv * 2 >= cand.guids.Length;
+            bool mostlyOriginal = bestOv * 2 >= n.guids.Length;
+            if (!coversOriginal && !mostlyOriginal) return;
+            n.match = best;
+            n.matchFrom = cand.path;
+            if (!n.nameEdited) n.pkgName = OriginIndex.DisplayName(cand);
+        }
+
+        void OnEnable() { EditorApplication.update += Tick; }
+        void OnDisable() { EditorApplication.update -= Tick; }
+
+        void Tick()
+        {
+            if (roots == null) return;
+            bool changed = false;
+            if (OriginIndex.Done && OriginIndex.Watch == watch)
+            {
+                foreach (var n in roots)
+                {
+                    if (n.scanned && !n.matched) { Match(n); changed = true; }
+                    if (n.children == null) continue;
+                    foreach (var c in n.children)
+                        if (c.scanned && !c.matched) { Match(c); changed = true; }
+                }
+            }
+            if (changed) SyncWholeGroups();
+            if (changed || (OriginIndex.Running && EditorApplication.timeSinceStartup - lastRepaint > 0.3))
+            {
+                lastRepaint = EditorApplication.timeSinceStartup;
+                Repaint();
+            }
+        }
+
+        static string KindLabel(int kind)
+        {
+            return Txt.Tr(kind == 1 ? "proj_kind_model" : kind == 2 ? "proj_kind_code" : kind == 3 ? "proj_kind_anim" : "proj_kind_other");
+        }
+
+        static string SizeLabel(long bytes)
+        {
+            double mb = bytes / (1024.0 * 1024.0);
+            return mb >= 1024 ? (mb / 1024).ToString("0.0") + " GB" : mb.ToString("0.0") + " MB";
+        }
+
+        void DrawNode(Node n, int depth, bool parentOn)
+        {
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                GUILayout.Space(8 + depth * 22);
+                if (depth == 0 && n.hasSub)
+                {
+                    if (GUILayout.Button(n.open ? "－" : "＋", EditorStyles.label, GUILayout.Width(18)))
+                    {
+                        n.open = !n.open;
+                        if (n.open && n.children == null) LoadChildren(n);
+                    }
+                }
+                else GUILayout.Space(22);
+
+                if (parentOn)
+                {
+                    // 親フォルダごと登録するので、中のフォルダは選べない
+                    GUI.enabled = false;
+                    EditorGUILayout.ToggleLeft(n.name, true, GUILayout.MinWidth(180));
+                    GUI.enabled = true;
+                }
+                else
+                {
+                    bool v = EditorGUILayout.ToggleLeft(n.name, n.on, GUILayout.MinWidth(180));
+                    if (v != n.on)
+                    {
+                        n.on = v;
+                        // MochiFitter など丸ごと入れるツールは、一致したフォルダ（ベリルなど）も一緒にオン・オフする
+                        if (IsWholeGroup(n)) foreach (var m in AllNodes()) if (m.match == n.match) m.on = v;
+                    }
+                }
+
+                GUILayout.FlexibleSpace();
+                if (!parentOn)
+                {
+                    GUI.enabled = n.on;
+                    var edited = EditorGUILayout.TextField(new GUIContent("", Txt.Tr("tip_proj_name")), n.pkgName, GUILayout.Width(220));
+                    if (edited != n.pkgName) { n.pkgName = edited; n.nameEdited = true; }
+                    GUI.enabled = true;
+                    var mark = n.matchFrom != null && !n.nameEdited
+                        ? new GUIContent(Txt.Tr("proj_auto"), Txt.F("proj_from", n.matchFrom))
+                        : hasSearch && !n.matched ? new GUIContent(Txt.Tr("proj_row_wait")) : new GUIContent("");
+                    GUILayout.Label(mark, EditorStyles.miniLabel, GUILayout.Width(52));
+                }
+                else GUILayout.Space(276);
+                GUILayout.Label(KindLabel(n.kind), EditorStyles.miniLabel, GUILayout.Width(120));
+                GUILayout.Label(SizeLabel(n.bytes), EditorStyles.miniLabel, GUILayout.Width(70));
+            }
+            if (depth == 0 && n.open && n.children != null)
+                foreach (var c in n.children) DrawNode(c, 1, n.on);
+        }
+
+        static string PkgName(Node n)
+        {
+            var name = (n.pkgName ?? "").Trim();
+            return name.Length > 0 ? name : n.exportName;
+        }
+
+        static string RemainingText()
+        {
+            if (OriginIndex.Total == 0) return Txt.Tr("proj_eta_list");
+            double r = OriginIndex.Remaining();
+            if (r < 0) return Txt.Tr("proj_eta_calc");
+            if (r < 5) return Txt.Tr("proj_eta_soon");
+            var t = TimeSpan.FromSeconds(r);
+            string time = PopL10n.Current == PopLang.En
+                ? (t.TotalMinutes >= 1 ? string.Format("{0}m {1}s", (int)t.TotalMinutes, t.Seconds) : string.Format("{0}s", (int)t.TotalSeconds))
+                : (t.TotalMinutes >= 1 ? string.Format("{0}分{1}秒", (int)t.TotalMinutes, t.Seconds) : string.Format("{0}秒", (int)t.TotalSeconds));
+            return Txt.F("proj_eta", time);
+        }
+
+        string StatusText()
+        {
+            if (!hasSearch) return Txt.Tr("proj_status_none");
+            if ((!OriginIndex.Done || OriginIndex.Watch != watch) && OriginIndex.Total == 0)
+                return Txt.Tr("proj_status_list");
+            if (!OriginIndex.Done || OriginIndex.Watch != watch)
+                return Txt.F("proj_status_run", OriginIndex.Finished, OriginIndex.Total, SizeLabel(System.Threading.Interlocked.Read(ref OriginIndex.BytesRead)));
+            var t = TimeSpan.FromSeconds(OriginIndex.Seconds);
+            var time = t.TotalMinutes >= 1 ? string.Format("{0}分{1}秒", (int)t.TotalMinutes, t.Seconds) : string.Format("{0:0.0}秒", t.TotalSeconds);
+            if (PopL10n.Current == PopLang.En) time = t.TotalMinutes >= 1 ? string.Format("{0}m {1}s", (int)t.TotalMinutes, t.Seconds) : string.Format("{0:0.0}s", t.TotalSeconds);
+            return Txt.F("proj_status_done", OriginIndex.Total, time, OriginIndex.NewlyRead, SizeLabel(System.Threading.Interlocked.Read(ref OriginIndex.BytesRead)));
+        }
+
+        IEnumerable<Node> AllNodes()
+        {
+            foreach (var n in roots)
+            {
+                yield return n;
+                if (n.children != null) foreach (var c in n.children) yield return c;
+            }
+        }
+
+        IEnumerable<Node> SelectedNodes()
+        {
+            foreach (var n in roots)
+            {
+                if (n.on) { yield return n; continue; }
+                if (n.children == null) continue;
+                foreach (var c in n.children) if (c.on) yield return c;
+            }
+        }
+
+        List<Pick> Collect()
+        {
+            var picks = new List<Pick>();
+            var groups = new Dictionary<int, Pick>();
+            foreach (var n in SelectedNodes())
+            {
+                if (n.match < 0 || n.match >= OriginIndex.Cands.Count)
+                {
+                    picks.Add(new Pick { assetPaths = new[] { n.assetPath }, name = PkgName(n) });
+                    continue;
+                }
+                if (groups.ContainsKey(n.match)) continue;
+                var cand = OriginIndex.Cands[n.match];
+                var paths = new List<string>();
+                if (NeedsWholeFolders(OriginIndex.DisplayName(cand)))
+                {
+                    // 一致したフォルダを丸ごと（チェックしていない方も含む）
+                    foreach (var m in AllNodes())
+                        if (m.match == n.match && !paths.Any(x => m.assetPath.StartsWith(x + "/") || m.assetPath == x))
+                            paths.Add(m.assetPath);
+                }
+                else
+                {
+                    // 元のパッケージに入っていたファイルだけ（ツールが作ったメッシュなどは入れない）
+                    foreach (var g in cand.guids)
+                    {
+                        var ap = AssetDatabase.GUIDToAssetPath(g.ToString("N"));
+                        if (!string.IsNullOrEmpty(ap) && File.Exists(ap)) paths.Add(ap);
+                    }
+                    if (paths.Count == 0) paths.Add(n.assetPath);
+                }
+                var pick = new Pick { assetPaths = paths.ToArray(), name = PkgName(n) };
+                groups[n.match] = pick;
+                picks.Add(pick);
+            }
+            // 同じ名前が重なったら番号を付ける（上書きしないように）
+            var used = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var p in picks)
+            {
+                var name = p.name; int k = 2;
+                while (!used.Add(name)) name = p.name + "_" + k++;
+                p.name = name;
+            }
+            return picks;
+        }
+
+        static bool IsWholeGroup(Node n)
+        {
+            return n.match >= 0 && n.match < OriginIndex.Cands.Count && NeedsWholeFolders(OriginIndex.DisplayName(OriginIndex.Cands[n.match]));
+        }
+
+        // 丸ごと入れるツールのフォルダがどれか 1 つでもオンなら、同じツールのフォルダを全部オンにする
+        void SyncWholeGroups()
+        {
+            var nodes = AllNodes().ToList();
+            foreach (var g in nodes.Where(IsWholeGroup).GroupBy(x => x.match))
+                if (g.Any(x => x.on)) foreach (var m in g) m.on = true;
+        }
+
+        bool Ready()
+        {
+            if (!hasSearch) return true;
+            if (!OriginIndex.Done || OriginIndex.Watch != watch) return false;
+            return SelectedNodes().All(n => n.matched);
+        }
+
+        void OnGUI()
+        {
+            if (roots == null) { Close(); return; }
+            EditorGUILayout.Space(6);
+            EditorGUILayout.LabelField(Txt.Tr("proj_msg"), EditorStyles.wordWrappedLabel);
+            EditorGUILayout.Space(2);
+            if (hasSearch && !Ready())
+            {
+                // 探している間は、上に目立つ帯とバーを出す（名前とチェックはまだ入っていない）
+                var box = EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+                EditorGUI.DrawRect(box, new Color(1f, 0.55f, 0.24f, 0.18f));
+                var big = new GUIStyle(EditorStyles.boldLabel) { fontSize = 13, wordWrap = true };
+                GUILayout.Label(Txt.Tr("proj_searching_head"), big);
+                GUILayout.Label(StatusText(), EditorStyles.wordWrappedMiniLabel);
+                GUILayout.Label(RemainingText(), EditorStyles.miniBoldLabel);
+                float frac = OriginIndex.Total > 0 ? (float)OriginIndex.Finished / OriginIndex.Total : 0f;
+                var bar = GUILayoutUtility.GetRect(10, 16, GUILayout.ExpandWidth(true));
+                EditorGUI.ProgressBar(bar, frac, OriginIndex.Total > 0 ? OriginIndex.Finished + " / " + OriginIndex.Total : "…");
+                EditorGUILayout.EndVertical();
+            }
+            else EditorGUILayout.LabelField(StatusText(), EditorStyles.wordWrappedMiniLabel);
+            EditorGUILayout.Space(4);
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                GUILayout.Space(48);
+                GUILayout.Label(Txt.Tr("proj_col_folder"), EditorStyles.miniBoldLabel, GUILayout.MinWidth(180));
+                GUILayout.FlexibleSpace();
+                GUILayout.Label(new GUIContent(Txt.Tr("proj_col_name"), Txt.Tr("tip_proj_name")), EditorStyles.miniBoldLabel, GUILayout.Width(276));
+                GUILayout.Space(194);
+            }
+            scroll = EditorGUILayout.BeginScrollView(scroll);
+            foreach (var n in roots) DrawNode(n, 0, false);
+            EditorGUILayout.EndScrollView();
+            EditorGUILayout.Space(4);
+            EditorGUILayout.LabelField(Txt.Tr("proj_note"), EditorStyles.wordWrappedMiniLabel);
+            EditorGUILayout.Space(4);
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                GUILayout.FlexibleSpace();
+                if (GUILayout.Button(Txt.Tr("dlg_cancel"), GUILayout.Width(110))) { done = null; Close(); }
+                bool ready = Ready();
+                // 数えるだけ（パスを集めるのは押したときだけ。毎フレームやると重い）
+                var sel = ready ? SelectedNodes().ToList() : new List<Node>();
+                int count = sel.Count(x => x.match < 0) + sel.Where(x => x.match >= 0).Select(x => x.match).Distinct().Count();
+                GUI.enabled = ready && count > 0;
+                var label = ready ? Txt.Tr("btn_add") + " (" + count + ")" : Txt.Tr("proj_wait");
+                if (GUILayout.Button(label, GUILayout.Width(ready ? 130 : 220)))
+                {
+                    var picks = Collect();
+                    var cb = done; done = null;
+                    Close();
+                    if (cb != null) cb(picks);
                 }
                 GUI.enabled = true;
             }
@@ -1107,6 +1930,20 @@ namespace PackageBundlerTool
                 if (p != null) AddFile(p);
             });
             card.Add(dropZone);
+
+            // 今のプロジェクトに入っているツールなどをパッケージにして登録する
+            // リンクと注釈をまとめて 1 つのボタンにする（注釈のところを押しても開く）
+            var fromProjectRow = l10n.Tip(new Button(() => ProjectPickWindow.Show(cfg.watchFolder, OriginCandidates(), AddFromProject)), "tip_from_project");
+            fromProjectRow.AddToClassList("pop-note-row");
+            var fromProject = l10n.Text(new Label(), "btn_from_project");
+            fromProject.AddToClassList("pop-note-link");
+            fromProject.pickingMode = PickingMode.Ignore;
+            var fromProjectNote = l10n.Text(new Label(), "note_from_project");
+            fromProjectNote.AddToClassList("pop-note");
+            fromProjectNote.pickingMode = PickingMode.Ignore;
+            fromProjectRow.Add(fromProject);
+            fromProjectRow.Add(fromProjectNote);
+            card.Add(fromProjectRow);
 
             selfToggle = ToggleRow(card, "toggle_self", cfg.includeSelf, v => { cfg.includeSelf = v; Save(); RefreshAll(); });
             selfToggle.parent.AddToClassList("pop-option-row");
@@ -1858,6 +2695,128 @@ namespace PackageBundlerTool
             ZipUtil.Cleanup(cfg.sources.Select(x => x.path));
         }
 
+        /// <summary>一覧のパッケージのうち、元のファイル（プロジェクトから書き出したものではない）</summary>
+        List<string> OriginCandidates()
+        {
+            var projectDir = Path.Combine(ZipUtil.ExtractRoot, "_Project");
+            return cfg.sources
+                .Where(x => !x.removed && File.Exists(x.path) && !x.path.StartsWith(Path.GetFullPath(projectDir), StringComparison.OrdinalIgnoreCase))
+                .Select(x => x.path).ToList();
+        }
+
+        /// <summary>
+        /// 選んだフォルダを 1 つずつ .unitypackage にして一覧に登録する。
+        /// 書き出したものはフォルダ名になりバージョン表記が消えるので、ファイル名ではなく中身で一覧と比べる:
+        /// 中身がすべて同じパッケージがあれば追加しない／一部だけ違えば別バージョンとして聞く。
+        /// </summary>
+        void AddFromProject(List<ProjectPickWindow.Pick> picks)
+        {
+            if (picks == null || picks.Count == 0) return;
+            var dir = Path.Combine(ZipUtil.ExtractRoot, "_Project");
+            var skipped = new List<string>();
+            try
+            {
+                Directory.CreateDirectory(dir);
+                for (int i = 0; i < picks.Count; i++)
+                {
+                    var name = picks[i].name;
+                    EditorUtility.DisplayProgressBar(Txt.Tr("proj_title"), Txt.F("proj_exporting", name), (float)i / picks.Count);
+                    var tmp = Path.Combine(Path.GetTempPath(), "PackageBundler_" + Guid.NewGuid().ToString("N") + ".unitypackage");
+                    var dst = Norm(Path.Combine(dir, ZipUtil.Safe(name) + ".unitypackage"));
+                    AssetDatabase.ExportPackage(picks[i].assetPaths, tmp, ExportPackageOptions.Recurse);
+                    if (!File.Exists(tmp)) continue;
+
+                    EditorUtility.DisplayProgressBar(Txt.Tr("proj_title"), Txt.F("proj_comparing", name), (i + 0.5f) / picks.Count);
+                    var mine = OriginIndex.ToMap(OriginIndex.ReadOnce(tmp));
+                    if (mine.Count == 0) { File.Delete(tmp); continue; }
+
+                    // 一覧のパッケージと中身を比べる
+                    BundlerSource same = null, near = null;
+                    int nearShared = 0;
+                    foreach (var src in cfg.sources.Where(x => !x.removed && File.Exists(x.path)))
+                    {
+                        Dictionary<Guid, ulong> theirs;
+                        try { theirs = OriginIndex.ToMap(OriginIndex.Get(src.path)); }
+                        catch (Exception) { continue; }
+                        int shared = 0, equal = 0;
+                        foreach (var kv in mine)
+                        {
+                            ulong h;
+                            if (!theirs.TryGetValue(kv.Key, out h)) continue;
+                            shared++;
+                            if (h == kv.Value) equal++;
+                        }
+                        if (equal == mine.Count) { same = src; break; }
+                        if (shared > nearShared) { nearShared = shared; near = src; }
+                    }
+
+                    if (same != null)
+                    {
+                        File.Delete(tmp);
+                        skipped.Add("・" + name + "（→ " + Path.GetFileNameWithoutExtension(same.path) + "）");
+                        continue;
+                    }
+
+                    // 前に同じフォルダから書き出したものが一覧にあれば、それを新しい中身にする
+                    var prev = cfg.sources.FirstOrDefault(x => SamePath(x.path, dst));
+                    if (prev != null)
+                    {
+                        MoveInto(tmp, dst);
+                        prev.removed = false;
+                        Save();
+                        continue;
+                    }
+
+                    // 半分以上のファイルが同じ GUID なら、同じツールの別バージョンとして聞く
+                    if (near != null && nearShared * 2 >= mine.Count)
+                    {
+                        EditorUtility.ClearProgressBar();
+                        int choice = EditorUtility.DisplayDialogComplex(Txt.Tr("dlg_title"),
+                            Txt.F("proj_other_ver", name, Path.GetFileNameWithoutExtension(near.path)),
+                            Txt.Tr("dlg_btn_replace"), Txt.Tr("proj_btn_skip"), Txt.Tr("dlg_btn_add_sep"));
+                        if (choice == 1) { File.Delete(tmp); continue; }
+                        MoveInto(tmp, dst);
+                        if (choice == 0)
+                        {
+                            near.path = dst;
+                            near.origin = "";
+                            Save();
+                        }
+                        else
+                        {
+                            cfg.sources.Add(new BundlerSource { id = Guid.NewGuid().ToString("N"), path = dst });
+                            Save();
+                        }
+                        continue;
+                    }
+
+                    MoveInto(tmp, dst);
+                    cfg.sources.Add(new BundlerSource { id = Guid.NewGuid().ToString("N"), path = dst });
+                    Save();
+                }
+            }
+            catch (Exception e)
+            {
+                EditorUtility.ClearProgressBar();
+                EditorUtility.DisplayDialog(Txt.Tr("dlg_title"), e.Message, Txt.Tr("dlg_ok"));
+            }
+            finally
+            {
+                EditorUtility.ClearProgressBar();
+            }
+            CleanupExtracted();
+            RefreshAll();
+            if (currentTab != 0) SelectTab(0);
+            if (skipped.Count > 0)
+                EditorUtility.DisplayDialog(Txt.Tr("dlg_title"), Txt.F("proj_skipped", string.Join("\n", skipped)), Txt.Tr("dlg_ok"));
+        }
+
+        static void MoveInto(string tmp, string dst)
+        {
+            if (File.Exists(dst)) File.Delete(dst);
+            File.Move(tmp, dst);
+        }
+
         void AddSource(string path, string origin = "")
         {
             path = Norm(path);
@@ -2057,16 +3016,27 @@ namespace PackageBundlerTool
         }
 
         // -------------------------------------------------------------- 更新版の検出
-        // 探す場所には zip がたくさんあることがあるので、裏で探して見つかったら表示を更新する
-        int scanGen;
+        // 探す場所には zip がたくさんあることがあるので、裏で探して見つかったら表示を更新する。
+        // 1. まず登録したパッケージと同じフォルダだけ（すぐ終わる） 2. 次に「更新版を探す場所」全体
+        // 探している間に一覧が変わったら、終わってからもう一度探す（途中の結果は捨てない）
         readonly object scanLock = new object();
+        bool scanning, rescan;
         Dictionary<string, string> scanResult;
-        int scanResultGen;
 
         void RefreshCandidates()
         {
             if (cfg == null) return;
-            int gen = ++scanGen;
+            lock (scanLock)
+            {
+                if (scanning) { rescan = true; return; }
+                scanning = true;
+                rescan = false;
+            }
+            StartScan();
+        }
+
+        void StartScan()
+        {
             var sources = cfg.sources.Where(x => !x.removed).Select(x => new[] { x.path, x.origin ?? "" }).ToList();
             var listed = new HashSet<string>(cfg.sources.Select(x => Norm(x.path)), StringComparer.OrdinalIgnoreCase);
             listed.Add(Norm(cfg.outputPath));
@@ -2075,23 +3045,38 @@ namespace PackageBundlerTool
 
             System.Threading.Tasks.Task.Run(() =>
             {
-                Dictionary<string, string> res;
-                try { res = FindNewer(sources, listed, watch); }
-                catch (Exception) { return; }
-                lock (scanLock) { scanResult = res; scanResultGen = gen; }
+                try
+                {
+                    var quick = FindNewer(sources, listed, null);
+                    lock (scanLock) scanResult = quick;
+                    var full = FindNewer(sources, listed, watch);
+                    lock (scanLock) scanResult = full;
+                }
+                catch (Exception) { }
+                finally
+                {
+                    lock (scanLock) scanning = false;
+                }
             });
         }
 
         void PollScan()
         {
             Dictionary<string, string> res;
+            bool again;
             lock (scanLock)
             {
-                if (scanResult == null) return;
-                if (scanResultGen != scanGen) { scanResult = null; return; }   // 古い結果は捨てる
+                again = rescan && !scanning;
+                if (again) { rescan = false; scanning = true; }
                 res = scanResult;
                 scanResult = null;
             }
+            if (again) StartScan();
+            if (res == null || cfg == null) return;
+
+            // 一覧から消えた行の結果は使わない
+            var live = new HashSet<string>(cfg.sources.Where(x => !x.removed).Select(x => x.path));
+            res = res.Where(kv => live.Contains(kv.Key)).ToDictionary(kv => kv.Key, kv => kv.Value);
             bool same = res.Count == newer.Count && res.All(kv => { string v; return newer.TryGetValue(kv.Key, out v) && v == kv.Value; });
             if (same) return;
             newer.Clear();
@@ -2140,7 +3125,7 @@ namespace PackageBundlerTool
             return result;
         }
 
-        static void ListPackages(string dir, int depth, List<string> result)
+        internal static void ListPackages(string dir, int depth, List<string> result)
         {
             try
             {

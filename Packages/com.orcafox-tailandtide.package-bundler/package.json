@@ -3,7 +3,7 @@
   "displayName": "Package Bundler",
   "version": "0.0.0",
   "unity": "2022.3",
-  "description": "いつも入れる .unitypackage を 1 つにまとめるエディタ拡張。Bundle the .unitypackage files you always import into one.",
+  "description": "既存プロジェクトやダウンロードした BOOTH 商品から、いつものツールなどを 1 つのまとめパッケージにするエディタ拡張。Make one bundle package from an existing project or downloaded BOOTH packages.",
   "author": {
     "name": "OrcaFox (Tail＆Tide)",
     "url": "https://github.com/OrcaFox-TailandTide"
